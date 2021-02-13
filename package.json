@@ -2,22 +2,31 @@
   "name": "mtasa-lua-transformer",
   "version": "0.1.0",
   "description": "Prepares Typescript files for Lua compilation for MTASA",
-  "main": "src/index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://gitlab.toliak.ru/mtasa/typescript/lua-transformer"
-  },
+  "author": "Anatolii Titov <a@toliak.ru>",
   "keywords": [
     "mtasa",
     "transformer",
     "lua"
   ],
-  "author": "Toliak",
-  "license": "ISC",
+  "license": "MIT",
+  "homepage": "https://gitlab.toliak.ru/mtasa/typescript/lua-transformer",
+  "bugs": "https://gitlab.toliak.ru/mtasa/typescript/lua-transformer/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.toliak.ru/mtasa/typescript/lua-transformer.git"
+  },
+  "type": "commonjs",
+  "main": "output/index.js",
+  "types": "output/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "peerDependencies": {
+    "typescript": "^4.0.0"
+  },
   "devDependencies": {
-    "typescript": "^4.1.5"
+    "ts-node": "^9.1.1",
+    "ttypescript": "^1.5.12"
   }
 }

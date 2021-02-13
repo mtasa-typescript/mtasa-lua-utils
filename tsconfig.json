@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "node",
-    "rootDir": "source",
+    "rootDir": "src",
     "outDir": "output",
     "strict": true,
     "sourceMap": true,
@@ -19,6 +19,6 @@
     ]
   },
   "include": [
-    "source/**/*.ts"
+    "src/**/*.ts"
   ]
 }
