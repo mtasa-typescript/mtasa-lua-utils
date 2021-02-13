@@ -1,0 +1,23 @@
+{
+  "name": "mtasa-lua-transformer",
+  "version": "0.1.0",
+  "description": "Prepares Typescript files for Lua compilation for MTASA",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.toliak.ru/mtasa/typescript/lua-transformer"
+  },
+  "keywords": [
+    "mtasa",
+    "transformer",
+    "lua"
+  ],
+  "author": "Toliak",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.1.5"
+  }
+}
