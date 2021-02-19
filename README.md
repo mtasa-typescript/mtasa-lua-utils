@@ -2,6 +2,9 @@
 
 The repository provides the transformer and post-build, pre-build utilities.
 
+These utilities and transformers can be used with 
+[TypescriptToLua](https://github.com/TypeScriptToLua/TypeScriptToLua) package.
+
 ## Transformer
 
 The transformer provides:
@@ -18,10 +21,10 @@ The transformer provides:
 
 Insert into `tsconfig.json`:
 
-```json
+```js
 {
   "compilerOptions": {
-    ...
+    // ...
 
     "plugins": [
       {
@@ -45,14 +48,14 @@ Checks compiled lua files correctness:
 
 Insert into `package.json`:
 
-```json
+```js
 {
-  ...
+  // ...
 
   "scripts": {
     "postbuild": "mtasa-utils-postbuild",
   },   
           
-  ...
+  // ...
 }
 ```

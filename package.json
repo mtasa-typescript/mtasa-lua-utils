@@ -1,6 +1,6 @@
 {
   "name": "mtasa-lua-utils",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Prepares Typescript files for Lua compilation for MTASA",
   "author": "Anatolii Titov <a@toliak.ru>",
   "keywords": [
@@ -10,11 +10,11 @@
     "lua"
   ],
   "license": "MIT",
-  "homepage": "https://gitlab.toliak.ru/mtasa/typescript/lua-utils",
-  "bugs": "https://gitlab.toliak.ru/mtasa/typescript/lua-utils/issues",
+  "homepage": "https://github.ru/mtasa-typescript/lua-utils",
+  "bugs": "https://github.ru/mtasa-typescript/lua-utils/issues",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.toliak.ru/mtasa/typescript/lua-utils.git"
+    "url": "https://github.ru/mtasa-typescript/lua-utils.git"
   },
   "type": "commonjs",
   "scripts": {
