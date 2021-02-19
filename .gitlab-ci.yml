@@ -1,0 +1,13 @@
+stages:
+  - build
+
+test:
+  image: node:12.18.1-buster-slim
+
+  stage: build
+
+  before_script:
+    - npm i --save-dev
+
+  script:
+    - npm run build
