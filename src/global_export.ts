@@ -1,5 +1,7 @@
 import * as ts from 'typescript';
 
+type ResultType = ts.Node | ts.Node[] | undefined;
+
 export function generateGlobalExpression(name: string, factory: ts.NodeFactory): ts.Node {
     // (globalThis as any)
     const parentheses = factory.createParenthesizedExpression(
@@ -31,7 +33,11 @@ export function generateGlobalExpression(name: string, factory: ts.NodeFactory):
     return expr
 }
 
-export function exportToGlobal(node: ts.ExportDeclaration, factory: ts.NodeFactory): ts.Node | ts.Node[] {
+export function exportDeclarationToGlobal(node: ts.Node, ctx: ts.TransformationContext): ResultType {
+    if (!ts.isExportDeclaration(node)) {
+        return undefined;
+    }
+
     const clause = node.exportClause;
     if (clause === undefined) {
         return node;
@@ -42,9 +48,36 @@ export function exportToGlobal(node: ts.ExportDeclaration, factory: ts.NodeFacto
     for (const element of elements) {
         nodes.push(generateGlobalExpression(
             element.getText(),
-            factory
+            ctx.factory
         ))
     }
 
     return nodes;
+}
+export function exportAssignmentToGlobal(node: ts.Node, ctx: ts.TransformationContext): ResultType {
+    if (!ts.isExportAssignment(node)) {
+        return undefined;
+    }
+
+    return generateGlobalExpression(
+        node.expression.getText(),
+        ctx.factory
+    );
+}
+
+export function exportToGlobal(node: ts.Node, ctx: ts.TransformationContext): ts.Node | ts.Node[] | undefined {
+    const chain: ((n: ts.Node, c: ts.TransformationContext) => ResultType)[] = [
+        exportDeclarationToGlobal,
+        exportAssignmentToGlobal,
+    ]
+    for (const f of chain) {
+        const result = f(node, ctx);
+        if (result) {
+            return result;
+        }
+    }
+
+    return undefined;
+
+
 }

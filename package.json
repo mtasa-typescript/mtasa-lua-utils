@@ -21,6 +21,12 @@
     "build": "tsc --build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "mtasa-utils-postbuild": "./utils/postbuild.js"
+  },
+  "dependencies": {
+    "glob": "^7.1.6"
+  },
   "devDependencies": {
     "ts-node": "^9.1.1",
     "ttypescript": "^1.5.12",
