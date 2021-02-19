@@ -1,6 +1,6 @@
 {
   "name": "mtasa-lua-utils",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Prepares Typescript files for Lua compilation for MTASA",
   "author": "Anatolii Titov <a@toliak.ru>",
   "keywords": [
@@ -25,7 +25,8 @@
     "mtasa-utils-postbuild": "./utils/postbuild.js"
   },
   "files": [
-    "transformer/**/*"
+    "transformer/**/*",
+    "utils/**/*"
   ],
   "dependencies": {
     "glob": "^7.1.6"
