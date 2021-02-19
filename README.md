@@ -8,30 +8,51 @@ The transformer provides:
 
 - TypeScript `import` removing: Result Lua file should not have any `requires` calls
 
-- TypeScript `export` replace: All exported statements will be written to Lua's `_G`  
-    From: 
-  ```typescript
-    const awesomeGlobalVariable: number = 13;
-    export {awesomeGlobalVariable};
-  ```  
-    To:
-  ```lua
-    local awesomeGlobalVariable = 13
-    _G.awesomeGlobalVariable = awesomeGlobalVariable
-  ```  
-
-- TypeScript inline `export` replace:
+- TypeScript `export` (and inlined `export`) replace: All exported statements will be written to Lua's `_G`. 
+  [Example](docs/export.md)
 
 - File side checking: You cannot mix `import ... from '.../client'` 
   and `import ... from '.../server'`
 
 ### How to use
 
-## PreBuild
+Insert into `tsconfig.json`:
 
-### How to use
+```json
+{
+  "compilerOptions": {
+    ...
+
+    "plugins": [
+      {
+        "transform": "mtasa-lua-utils/transformer",
+        "after": false
+      }
+    ],
+    
+    ...
+  }
+}
+```
 
 ## PostBuild
 
+Checks compiled lua files correctness:
+
+- Are the files provided in `meta.xml`
+
 ### How to use
 
+Insert into `package.json`:
+
+```json
+{
+  ...
+
+  "scripts": {
+    "postbuild": "mtasa-utils-postbuild",
+  },   
+          
+  ...
+}
+```
