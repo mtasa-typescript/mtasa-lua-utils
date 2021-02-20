@@ -1,4 +1,4 @@
-name: NPM Test
+name: NPM Build
 
 on:
     pull_request:
@@ -9,7 +9,7 @@ on:
             - '**.md'
 
 jobs:
-    test:
+    build:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
@@ -21,5 +21,4 @@ jobs:
                 with:
                     node-version: 12.x
             -   run: npm ci
-            -   run: npm run test
-            -   run: npm test
+            -   run: npm run build
