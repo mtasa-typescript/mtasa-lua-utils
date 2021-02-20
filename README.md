@@ -33,7 +33,7 @@ Insert into `tsconfig.json`:
       }
     ],
     
-    ...
+    // ...
   }
 }
 ```
