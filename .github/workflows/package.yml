@@ -18,19 +18,19 @@ jobs:
         with:
           node-version: 12.x
       - name: Cache Node files
-          uses: actions/cache@v2
-          env:
-            cache-name: cache-node-modules
-          with:
-            # npm cache files are stored in `~/.npm` on Linux/macOS
-            path:
-              - ~/.npm
-              - ./transformer
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path:
+            - ~/.npm
+            - ./transformer
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - run: npm ci
       - run: npm run build
   publish:
@@ -45,19 +45,19 @@ jobs:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
       - name: Cache Node files
-          uses: actions/cache@v2
-          env:
-            cache-name: cache-node-modules
-          with:
-            # npm cache files are stored in `~/.npm` on Linux/macOS
-            path:
-              - ~/.npm
-              - ./transformer
-            key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path:
+            - ~/.npm
+            - ./transformer
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
       - run: npm ci
       - run: npm run build
       - run: npm publish
