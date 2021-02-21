@@ -7,7 +7,9 @@
     "mtasa",
     "transformer",
     "mtasa-typescript",
-    "lua"
+    "lua",
+    "linting",
+    "typescript"
   ],
   "license": "MIT",
   "homepage": "https://github.com/mtasa-typescript/mtasa-lua-utils",
