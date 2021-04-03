@@ -14,7 +14,7 @@ export default function (_program: ts.Program, _pluginOptions: {}) {
                 side: undefined,
             };
 
-            const visitor = (node: ts.Node): ts.Node | ts.Node[] | undefined => {
+            const visitor = (node: ts.Node): (ts.Node | ts.Node[] | undefined) => {
                 // Attempt to detect script side (and to restrict sides mixing)
                 fileSideDetection(node, props);
 
@@ -23,10 +23,17 @@ export default function (_program: ts.Program, _pluginOptions: {}) {
                     return undefined;
                 }
 
-                // Attempt to replace `export` by setting `_G` prop
-                const exportReplace = exportToGlobal(node, ctx)
+                // Exported functions/classes/variables
+                // will be explicitly set as a property of _G
+                let exportReplace = exportToGlobal(node, ctx)
                 if (exportReplace) {
-                    return exportReplace;
+                    if (typeof exportReplace == 'object') {
+                        exportReplace = exportReplace as ts.Node[];
+                        return [node, ...exportReplace];
+                    } else {
+                        exportReplace = exportReplace as ts.Node;
+                        return [node, exportReplace];
+                    }
                 }
 
                 // Attempt to remove `export` modifier and add `_G` prop

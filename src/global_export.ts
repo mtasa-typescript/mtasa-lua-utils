@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 
 type ResultType = ts.Node | ts.Node[] | undefined;
 
-export function generateGlobalExpression(name: string, factory: ts.NodeFactory): ts.Node {
+export function generateGlobalExpression(name: string, factory: ts.NodeFactory, fromExportedScope?: boolean): ts.Node {
     // (globalThis as any)
     const parentheses = factory.createParenthesizedExpression(
         factory.createAsExpression(
@@ -17,15 +17,29 @@ export function generateGlobalExpression(name: string, factory: ts.NodeFactory):
         factory.createIdentifier(name),
     )
 
-    // (globalThis as any).name = name
+    let rightIdentifier: ts.Expression;
+    if (fromExportedScope) {
+        const exported = factory.createIdentifier('____exports');
+        rightIdentifier = factory.createPropertyAccessExpression(
+            exported,
+            name
+        );
+
+        (exported as any).parent = rightIdentifier;
+    } else {
+        rightIdentifier = factory.createIdentifier(name)
+    }
+
+    // (globalThis as any).name = [____exports.]name
     const binary = factory.createBinaryExpression(
         accessor,
         ts.SyntaxKind.EqualsToken,
-        factory.createIdentifier(name),
+        rightIdentifier,
     )
 
     const expr = factory.createExpressionStatement(binary);
 
+    (rightIdentifier as any).parent = binary;
     (binary as any).parent = expr;
     (accessor as any).parent = binary;
     (parentheses as any).parent = accessor;
@@ -54,6 +68,7 @@ export function exportDeclarationToGlobal(node: ts.Node, ctx: ts.TransformationC
 
     return nodes;
 }
+
 export function exportAssignmentToGlobal(node: ts.Node, ctx: ts.TransformationContext): ResultType {
     if (!ts.isExportAssignment(node)) {
         return undefined;
@@ -78,6 +93,4 @@ export function exportToGlobal(node: ts.Node, ctx: ts.TransformationContext): ts
     }
 
     return undefined;
-
-
 }
