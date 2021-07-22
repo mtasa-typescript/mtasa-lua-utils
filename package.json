@@ -1,6 +1,6 @@
 {
 	"name": "mtasa-lua-utils",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Prepares Typescript files for Lua compilation for MTASA",
 	"author": "Anatolii Titov <a@toliak.ru>",
 	"keywords": [
@@ -37,6 +37,7 @@
 	},
 	"dependencies": {
 		"fast-glob": "^3.2.7",
-		"glob-escape": "^0.0.2"
+		"glob-escape": "^0.0.2",
+		"json5": "^2.2.0"
 	}
 }
