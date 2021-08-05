@@ -1,46 +1,46 @@
 {
-  "name": "mtasa-lua-utils",
-  "version": "0.2.1",
-  "description": "Prepares Typescript files for Lua compilation for MTASA",
-  "author": "Anatolii Titov <a@toliak.ru>",
-  "keywords": [
-    "mtasa",
-    "transformer",
-    "mtasa-typescript",
-    "lua",
-    "linting",
-    "typescript"
-  ],
-  "license": "MIT",
-  "homepage": "https://github.com/mtasa-typescript/mtasa-lua-utils",
-  "bugs": "https://github.com/mtasa-typescript/mtasa-lua-utils/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mtasa-typescript/mtasa-lua-utils.git"
-  },
-  "type": "commonjs",
-  "scripts": {
-    "build": "tsc --build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --check .",
-    "prettier-fix": "prettier --write ."
-  },
-  "bin": {
-    "mtasa-utils-postbuild": "./utils/postbuild.js"
-  },
-  "files": [
-    "transformer/**/*",
-    "utils/**/*"
-  ],
-  "devDependencies": {
-    "prettier": "^2.3.2",
-    "ts-node": "^9.1.1",
-    "ttypescript": "^1.5.12",
-    "typescript": "^4.0.0"
-  },
-  "dependencies": {
-    "fast-glob": "^3.2.7",
-    "glob-escape": "^0.0.2",
-    "json5": "^2.2.0"
-  }
+    "name": "mtasa-lua-utils",
+    "version": "0.2.1",
+    "description": "Prepares Typescript files for Lua compilation for MTASA",
+    "author": "Anatolii Titov <a@toliak.ru>",
+    "keywords": [
+        "mtasa",
+        "transformer",
+        "mtasa-typescript",
+        "lua",
+        "linting",
+        "typescript"
+    ],
+    "license": "MIT",
+    "homepage": "https://github.com/mtasa-typescript/mtasa-lua-utils",
+    "bugs": "https://github.com/mtasa-typescript/mtasa-lua-utils/issues",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mtasa-typescript/mtasa-lua-utils.git"
+    },
+    "type": "commonjs",
+    "scripts": {
+        "build": "tsc --build",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prettier": "prettier --check .",
+        "prettier-fix": "prettier --write ."
+    },
+    "bin": {
+        "mtasa-utils-postbuild": "./utils/postbuild.js"
+    },
+    "files": [
+        "transformer/**/*",
+        "utils/**/*"
+    ],
+    "devDependencies": {
+        "prettier": "^2.3.2",
+        "ts-node": "^9.1.1",
+        "ttypescript": "^1.5.12",
+        "typescript": "^4.0.0"
+    },
+    "dependencies": {
+        "fast-glob": "^3.2.7",
+        "glob-escape": "^0.0.2",
+        "json5": "^2.2.0"
+    }
 }
