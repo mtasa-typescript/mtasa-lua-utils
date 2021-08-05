@@ -1,6 +1,6 @@
 {
   "name": "mtasa-lua-utils",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Prepares Typescript files for Lua compilation for MTASA",
   "author": "Anatolii Titov <a@toliak.ru>",
   "keywords": [
