@@ -29,7 +29,9 @@ Insert into `tsconfig.json`:
     "plugins": [
       {
         "transform": "mtasa-lua-utils/transformer",
-        "after": false
+        "after": false,
+        "externalImports": true, //dont remove non mta imports (Default: false)
+        "globalExports": false //dont replace exports to global (Default: true)
       }
     ],
     
