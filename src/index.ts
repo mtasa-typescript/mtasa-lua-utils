@@ -4,7 +4,10 @@ import { fileSideDetection, ImportTypesSide } from './script_side_detection';
 import { exportToGlobal } from './global_export';
 import removeExportModifierIfPossible from './remove_export_modifier';
 
-export default function (_program: ts.Program, _pluginOptions: {}) {
+export default function (_program: ts.Program, _pluginOptions: {
+    externalImports?: boolean,
+    globalExports?: boolean
+}) {
     return (ctx: ts.TransformationContext) => {
         return (sourceFile: ts.SourceFile) => {
             const props: {
@@ -21,7 +24,7 @@ export default function (_program: ts.Program, _pluginOptions: {}) {
 
                 // Remove imports => remove lua 'requires'
                 if (isImportNode(node)) {
-                    return undefined;
+                    if (props.side || !(_pluginOptions?.externalImports ?? false)) return undefined;
                 }
 
                 // Exported functions/classes/variables
@@ -43,7 +46,7 @@ export default function (_program: ts.Program, _pluginOptions: {}) {
                     node,
                     ctx,
                 );
-                if (removedModifier) {
+                if (removedModifier && (_pluginOptions?.globalExports ?? true)) {
                     return removedModifier;
                 }
 
