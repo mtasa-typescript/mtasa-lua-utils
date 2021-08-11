@@ -27,8 +27,9 @@ export default function (
 
                 // Remove imports => remove lua 'requires'
                 if (isImportNode(node)) {
+                    //is imports from mta or external imports disabled
                     if (
-                        props.side ||
+                        node.getText().indexOf('mtasa-lua-types') >= 0 ||
                         !(_pluginOptions?.externalImports ?? false)
                     )
                         return undefined;
