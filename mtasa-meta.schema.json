@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MTASA Meta",
+  "description": "MTASA Meta file. Extended for mtasa-lua-compiler",
+  "type": "object",
+  "properties": {
+    "info": {
+      "type": "object",
+      "description": "General resource information",
+      "properties": {
+        "author": {
+          "type": "string",
+          "description": "The author of this resource"
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of this resource"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of this resource"
+        },
+        "description": {
+          "type": "string",
+          "description": "A brief description of this resource"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of this resource",
+          "enum": [
+            "gamemode",
+            "script",
+            "map",
+            "misc"
+          ]
+        },
+        "gamemodes": {
+          "type": "array",
+          "description": "The gamemodes to be compatible with the resource",
+          "items": {
+            "type": "string",
+            "description": "Gamemode name"
+          }
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "compilerConfig": {
+      "type": "object",
+      "description": "Internal configuration for compiler",
+      "properties": {
+        "srcDir": {
+          "type": "string",
+          "description": "Directory with resource source files"
+        },
+        "resourceDirectoryName": {
+          "type": "string",
+          "description": "Output directory name"
+        }
+      },
+      "required": [
+        "srcDir"
+      ]
+    },
+    "scripts": {
+      "type": "array",
+      "description": "List of scripts",
+      "items": {
+        "$ref": "#/definitions/Script"
+      }
+    },
+    "bundledScripts": {
+      "type": "array",
+      "description": "List of bundled scripts",
+      "items": {
+        "$ref": "#/definitions/Script",
+        "properties": {
+          "tsSrc": {
+            "type": "string",
+            "description": "TypeScript entrypoint script file"
+          }
+        },
+        "required": [
+          "tsSrc"
+        ]
+      }
+    },
+    "maps": {
+      "type": "array",
+      "description": "Map definitions",
+      "items": {
+        "type": "object",
+        "description": "The map for a gamemode",
+        "properties": {
+          "src": {
+            "type": "string",
+            "description": "Must be in the resource source directory"
+          },
+          "dimension": {
+            "type": "number",
+            "description": "Dimension in which the map will be loaded"
+          }
+        },
+        "required": [
+          "src"
+        ]
+      }
+    },
+    "additionalTags": {
+      "type": "array",
+      "description": "Put additional XML tags in this list",
+      "items": {
+        "$ref": "#/definitions/XMLTagData"
+      }
+    }
+  },
+  "definitions": {
+    "XMLTagData": {
+      "type": "object",
+      "description": "XML Tag",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Tag name"
+        },
+        "value": {
+          "description": "XML Tag value",
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/XMLTagData"
+            }
+          ]
+        },
+        "properties": {
+          "type": "array",
+          "description": "XML Tag properties",
+          "items": {
+            "type": "object",
+            "description": "XML Tag Property",
+            "properties": {
+              "key": {
+                "type": "string",
+                "description": "XML Tag Property key"
+              },
+              "value": {
+                "type": "string",
+                "description": "XML Tag Property value"
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "name"
+      ]
+    },
+    "Script": {
+      "type": "object",
+      "description": "Source code for this resource",
+      "properties": {
+        "src": {
+          "type": "string",
+          "description": "TypeScript script file"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of source code",
+          "enum": [
+            "server",
+            "client",
+            "shared"
+          ]
+        },
+        "cache": {
+          "type": "boolean",
+          "description": "When the script file type is \"client\", this setting controls whether the file is saved on the clients' hard drive"
+        },
+        "validate": {
+          "type": "boolean",
+          "description": "If set to \"false\", compatibility checks are skipped"
+        }
+      },
+      "required": [
+        "src",
+        "type"
+      ]
+    }
+  }
+}
