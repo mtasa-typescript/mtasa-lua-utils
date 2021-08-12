@@ -108,6 +108,227 @@
         ]
       }
     },
+    "files": {
+      "type": "array",
+      "description": "File definitions",
+      "items": {
+        "type": "object",
+        "description": "A client-side file. Generally these are images, .txd, .col, .dff or .xml files. They'll be downloaded by clients when the resources is started (or on join",
+        "properties": {
+          "src": {
+            "type": "string",
+            "description": "Client-side file name (can be path too eg. \"images/image.png\")\n"
+          },
+          "download": {
+            "type": "boolean",
+            "description": "Whether or not to be sent to the client automatically"
+          }
+        },
+        "required": [
+          "src"
+        ]
+      }
+    },
+    "includes": {
+      "type": "array",
+      "description": "Include definitions",
+      "items": {
+        "type": "object",
+        "description": "Include resources that this resource will use",
+        "properties": {
+          "resource": {
+            "type": "string",
+            "description": "Resource name that you want to start with this resource"
+          },
+          "minVersion": {
+            "type": "string",
+            "description": "Minimum version that resource needs to be"
+          },
+          "maxVersion": {
+            "type": "string",
+            "description": "Maximum version that resource needs to be"
+          }
+        },
+        "required": [
+          "resource"
+        ]
+      }
+    },
+    "configs": {
+      "type": "array",
+      "description": "Config definitions",
+      "items": {
+        "type": "object",
+        "description": "Config file (.xml) can be accessed by resource",
+        "properties": {
+          "src": {
+            "type": "string",
+            "description": "The file name of the config file"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the config file",
+            "enum": [
+              "client",
+              "server"
+            ]
+          }
+        },
+        "required": [
+          "src",
+          "type"
+        ]
+      }
+    },
+    "exports": {
+      "type": "array",
+      "description": "Export definitions",
+      "items": {
+        "type": "object",
+        "description": "This exports functions from this resource, so other resources can use them with call",
+        "properties": {
+          "function": {
+            "type": "string",
+            "description": "The function name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Whether function is exported server-side or client-side",
+            "enum": [
+              "client",
+              "server",
+              "shared"
+            ]
+          },
+          "http": {
+            "type": "boolean",
+            "description": "Can the function be called via HTTP"
+          }
+        },
+        "required": [
+          "function",
+          "type"
+        ]
+      }
+    },
+    "htmls": {
+      "type": "array",
+      "description": "HTML definitions",
+      "items": {
+        "type": "object",
+        "description": "HTML file",
+        "properties": {
+          "src": {
+            "type": "string",
+            "description": "The filename for the HTTP file"
+          },
+          "default": {
+            "type": "boolean",
+            "description": "The html file is one that is shown by default when visiting /resourceName/ on the server. Only one html can be default, the rest are ignored",
+            "enum": [
+              "client",
+              "server",
+              "shared"
+            ]
+          },
+          "raw": {
+            "type": "boolean",
+            "description": "The html file is not parsed by the Lua interpreter and is treated as binary data. Must be used for binary files"
+          }
+        },
+        "required": [
+          "src",
+          "default",
+          "raw"
+        ]
+      }
+    },
+    "settings": {
+      "type": "array",
+      "description": "Most gamemodes use settings system to let server admins to configure it how they like. For instance you could set round time and then use get and set to get the value or change it, respectively.",
+      "items": {
+        "type": "object",
+        "description": "Resource settings can be accessed by resource and Admin panel",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The setting name used by the scripts to get or set the setting value"
+          },
+          "value": {
+            "type": "string",
+            "description": "The setting default value used by the scripts"
+          },
+          "friendlyName": {
+            "type": "string",
+            "description": "A friendly name to the setting"
+          },
+          "accept": {
+            "type": "string",
+            "description": "The values the setting could accept"
+          },
+          "examples": {
+            "type": "string",
+            "description": "An Example of a value"
+          },
+          "desc": {
+            "type": "string",
+            "description": "A description of the setting"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      }
+    },
+    "minMtaVersion": {
+      "type": "object",
+      "description": "Minimum version requirements for this resource to run correctly. When authoring resources, the minimum version should usually be set to the current released version of MTA:SA",
+      "properties": {
+        "client": {
+          "type": "string",
+          "description": "The minimum client version"
+        },
+        "server": {
+          "type": "string",
+          "description": "The minimum server version"
+        }
+      },
+      "required": [
+        "client",
+        "server"
+      ]
+    },
+    "aclRequests": {
+      "type": "array",
+      "description": "A list of ACL rights this resource will need. Any user with admin permission can accept or reject a resource ACL request by using the command: /aclrequest [list/allow/deny] <resourceName>",
+      "items": {
+        "type": "object",
+        "description": "An individual right",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The right name"
+          },
+          "access": {
+            "type": "boolean",
+            "description": "Set to true to allow the resource to access this right. Set to false to deny the access to this right"
+          }
+        },
+        "required": [
+          "name",
+          "access"
+        ]
+      }
+    },
+    "syncMapElementData": {
+      "type": "boolean",
+      "description": "Controls whether map element data such as \"PosX\" and \"DoubleSided\" are transferred to the client. This data is usually not required by most gamemodes or resources. (Map Editor and Interiors require this to be not set to false to work). When set in a gamemode meta.xml, the setting will apply to all maps loaded by that resource."
+    },
+    "downloadPriorityGroup": {
+      "type": "number",
+      "description": "If not set, the download priority group for a resource defaults to 0. If this is set higher than 0, then the resource will be downloaded and started on the client earlier than other resources. This option is useful for resources with critical client functionality that other things in your gamemode (or fair play) rely on. If set to less than 0 (a negative number, like -1), the resource will be downloaded and started on the client later than other resources."
+    },
     "additionalTags": {
       "type": "array",
       "description": "Put additional XML tags in this list",
