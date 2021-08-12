@@ -1,19 +1,27 @@
 {
     "compilerOptions": {
         "target": "ES6",
+        "lib": ["es6"],
         "module": "commonjs",
-        "moduleResolution": "node",
         "rootDir": "src",
-        "outDir": "transformer",
+        "outDir": "dist",
         "strict": true,
         "sourceMap": true,
         "declaration": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
         "esModuleInterop": true,
-        "lib": ["es2019"]
+        "newLine": "LF",
+        "stripInternal": true
+    },
+    "tstl": {
+        // MTASA Lua Language version is 5.1
+        "luaTarget": "5.1",
+        // No "self" in global functions
+        "noImplicitSelf": true,
+        // Provides debug.traceback function
+        "sourceMapTraceback": true,
+        "tstlVerbose": true,
     }
 }

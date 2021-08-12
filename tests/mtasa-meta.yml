@@ -1,0 +1,7 @@
+info:
+    name: Resource1
+    type: script
+
+compilerConfig:
+    resourceDirectoryName: 'resource_1'
+    srcDir: 'resource_example'
