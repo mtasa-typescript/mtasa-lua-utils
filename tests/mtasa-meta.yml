@@ -4,4 +4,33 @@ info:
 
 compilerConfig:
     resourceDirectoryName: 'resource_1'
-    srcDir: 'resource_example'
+    srcDir: 'test/resource_example'
+
+scripts:
+    - src: index.ts
+      type: client
+
+
+minMtaVersion:
+    client: '1.5.8'
+    server: '1.5.8'
+
+#---
+#info:
+#    name: Resource2
+#    type: script
+#
+#compilerConfig:
+#    resourceDirectoryName: 'resource_2'
+#    srcDir: 'resource_example_2'
+#
+#scripts:
+#    - src: index.ts
+#      type: server
+#
+#minMtaVersion:
+#    client: '1.5.8'
+#    server: '1.5.8'
+#
+## C:\Users\Toliak\WebstormProjects\mtasa-lua-utils\src\test\resource_example\index.ts
+## C:\Users\Toliak\WebstormProjects\mtasa-lua-utils\src\test\resource_example

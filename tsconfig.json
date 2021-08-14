@@ -3,7 +3,7 @@
         "target": "ES6",
         "lib": ["es6"],
         "module": "commonjs",
-        "rootDir": "src",
+        "sourceRoot": "src",
         "outDir": "dist",
         "strict": true,
         "sourceMap": true,
@@ -23,5 +23,8 @@
         // Provides debug.traceback function
         "sourceMapTraceback": true,
         "tstlVerbose": true,
+//        "luaPlugins": [
+//            { "name": "./dist/ast/examplePlugin.js" }
+//        ]
     }
 }

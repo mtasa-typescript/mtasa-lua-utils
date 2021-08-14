@@ -20,11 +20,15 @@
     },
     "type": "commonjs",
     "scripts": {
+        "prebuild": "convert-schema",
         "build": "tsc --build",
+        "watch": "tsc --build --watch",
         "test": "echo \"Error: no test specified\" && exit 1",
         "prettier": "prettier --check .",
+        "eslint": "eslint --max-warnings=0 .",
         "prettier-fix": "prettier --write .",
-        "dev": "npm run build && node dist/mtasa-ts-build.js"
+        "convert-schema": "node utils/convert-schema.js && prettier --write src/compiler/meta/types.ts",
+        "demo": "node dist/mtasa-ts-build.js"
     },
     "bin": {
         "mtasa-utils-postbuild": "./utils/postbuild.js",
@@ -35,7 +39,12 @@
         "utils/**/*"
     ],
     "devDependencies": {
+        "@types/js-yaml": "^4.0.2",
         "@types/node": "^16.6.0",
+        "@typescript-eslint/eslint-plugin": "^4.29.1",
+        "@typescript-eslint/parser": "^4.29.1",
+        "eslint": "^7.32.0",
+        "json-schema-to-typescript": "^10.1.4",
         "prettier": "^2.3.2",
         "ts-node": "^9.1.1",
         "ttypescript": "^1.5.12",
@@ -44,7 +53,9 @@
     "dependencies": {
         "fast-glob": "^3.2.7",
         "glob-escape": "^0.0.2",
+        "js-yaml": "^4.1.0",
         "json5": "^2.2.0",
+        "jsonschema": "^1.4.0",
         "typescript-to-lua": "^0.42.0"
     }
 }
