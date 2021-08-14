@@ -4,8 +4,7 @@ import { Validator, ValidatorResult } from 'jsonschema';
 import { MTASAMeta } from './types';
 import * as JSON5 from 'json5';
 
-class MetaReaderError extends Error {
-}
+class MetaReaderError extends Error {}
 
 export function validateMeta(data: MTASAMeta): ValidatorResult {
     const schemaContent = fs.readFileSync('mtasa-meta.schema.json', 'utf8');
@@ -27,9 +26,9 @@ export function readMeta(filepath: string): MTASAMeta[] {
         const validationResult = validateMeta(meta);
         if (validationResult.errors.length > 0) {
             console.log(
-              `Error happen while validating "${filepath}". In part: ${i}`,
+                `Error happen while validating "${filepath}". In part: ${i}`,
             );
-            throw new MetaReaderError(validationResult.toString())
+            throw new MetaReaderError(validationResult.toString());
         }
     }
 

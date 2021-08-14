@@ -3,15 +3,19 @@ import {
     Identifier,
     SyntaxKind,
     TableIndexExpression,
-    VariableDeclarationStatement
-} from "typescript-to-lua";
+    VariableDeclarationStatement,
+} from 'typescript-to-lua';
 import * as ts from 'typescript';
 import {
     FunctionVisitor,
     Visitor,
 } from 'typescript-to-lua/dist/transformation/context/visitors';
 import { transformFunctionDeclaration } from 'typescript-to-lua/dist/transformation/visitors/function';
-import { getExportsTableName, getGlobalsTableName, prepareOneToManyVisitorResult } from "./utils";
+import {
+    getExportsTableName,
+    getGlobalsTableName,
+    prepareOneToManyVisitorResult,
+} from './utils';
 import { Expression } from 'typescript-to-lua/dist/LuaAST';
 
 const importDeclarationVisitor: Visitor<ts.ImportDeclaration> = function (
@@ -38,7 +42,7 @@ const functionDeclaration: FunctionVisitor<ts.FunctionDeclaration> = function (
         }
 
         const declaration = statement as VariableDeclarationStatement;
-        const left: Expression[] = declaration.left
+        const left: Expression[] = declaration.left;
         if (left[0].kind !== SyntaxKind.TableIndexExpression) {
             continue;
         }

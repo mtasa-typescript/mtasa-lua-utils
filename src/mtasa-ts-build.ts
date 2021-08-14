@@ -1,17 +1,17 @@
 import {
     CompilerOptions,
     createDiagnosticReporter,
-    parseConfigFileWithSystem
-} from "typescript-to-lua";
-import ts from "typescript";
+    parseConfigFileWithSystem,
+} from 'typescript-to-lua';
+import ts from 'typescript';
 import {
     appendCommandLineOptionDeclarations,
     getMtasaMetaPath,
-    parseCommandLine
-} from "./compiler/cli";
-import { readMeta } from "./compiler/meta/reader";
-import { locateConfigFile } from "typescript-to-lua/dist/cli/tsconfig";
-import { executeCompilerForAllResources } from "./compiler/compile";
+    parseCommandLine,
+} from './compiler/cli';
+import { readMeta } from './compiler/meta/reader';
+import { locateConfigFile } from 'typescript-to-lua/dist/cli/tsconfig';
+import { executeCompilerForAllResources } from './compiler/compile';
 
 const reportDiagnostic = createDiagnosticReporter(false);
 
@@ -25,7 +25,7 @@ if (parsed.errors.length > 0) {
 }
 const configFileName = locateConfigFile(parsed);
 
-if (typeof configFileName === "object") {
+if (typeof configFileName === 'object') {
     reportDiagnostic(configFileName);
     ts.sys.exit(ts.ExitStatus.DiagnosticsPresent_OutputsSkipped);
 }
@@ -33,10 +33,8 @@ if (typeof configFileName === "object") {
 const configParseResult = parseConfigFileWithSystem(configFileName as string);
 const compilerOptions: CompilerOptions = {
     ...configParseResult.options,
-    ...parsed.options
+    ...parsed.options,
 };
 
 const metaData = readMeta(getMtasaMetaPath(compilerOptions));
 executeCompilerForAllResources(compilerOptions, metaData);
-
-

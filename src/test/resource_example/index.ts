@@ -1,3 +1,7 @@
+import { testFunction } from './imported';
+
+testFunction();
+
 function something() {
-  return 1;
+    return 1;
 }

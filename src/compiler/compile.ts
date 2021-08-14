@@ -1,4 +1,4 @@
-import ts, { Diagnostic } from 'typescript';
+import ts, { Diagnostic, DiagnosticCategory } from 'typescript';
 import { CompilerOptions } from './cli';
 import { MTASAMeta, Script } from './meta/types';
 import * as fs from 'fs';
@@ -55,6 +55,8 @@ function getScriptsFromMeta(metaData: Readonly<MTASAMeta>): MetaScriptsBySide {
     return result;
 }
 
+// TODO: get resource verbose name function
+
 // TODO: WIP
 export function executeCompilerForAllResources(
     options: Readonly<CompilerOptions>,
@@ -91,8 +93,13 @@ export function executeCompilerForAllResources(
             }
 
             const scriptsToBuild = scriptList.map(script =>
-                path.join(newRootDir, script.src),
+                path.join(newRootDir, script.src).replace(/\\/g, '/'),
             );
+            const scriptsToBuildSet = new Set<string>();
+            scriptsToBuild.forEach(value =>
+                scriptsToBuildSet.add(path.resolve(value)),
+            );
+
             const emittedScripts = new Set<string>();
             const result = transpileFiles(
                 scriptsToBuild,
@@ -120,14 +127,19 @@ export function executeCompilerForAllResources(
                 },
             );
 
-            for (const scriptPath of scriptsToBuild) {
-                if (emittedScripts.has(scriptPath)) {
+            for (const scriptPath of emittedScripts) {
+                if (scriptsToBuildSet.has(scriptPath)) {
                     continue;
                 }
 
-                // diagnosticResults.push({
-                //     messageText: ""
-                // });
+                diagnosticResults.push({
+                    messageText: `File '${scriptPath}' is used, but not specified in mtasa-meta.yml`,
+                    code: 1,
+                    category: DiagnosticCategory.Error,
+                    file: undefined,
+                    length: undefined,
+                    start: undefined,
+                });
             }
 
             diagnosticResults = [...diagnosticResults, ...result.diagnostics];

@@ -9,12 +9,12 @@ compilerConfig:
 scripts:
     - src: index.ts
       type: client
-
+    - src: imported.ts
+      type: server
 
 minMtaVersion:
     client: '1.5.8'
     server: '1.5.8'
-
 #---
 #info:
 #    name: Resource2
