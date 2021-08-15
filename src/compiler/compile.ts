@@ -1,9 +1,18 @@
 import ts, { Diagnostic, DiagnosticCategory } from 'typescript';
 import { CompilerOptions } from './cli';
-import { MTASAMeta, Script } from './meta/types';
+import { MTASAMeta } from './meta/types';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createDiagnosticReporter, transpileFiles } from 'typescript-to-lua';
+import {
+    getResourceData,
+    getScriptsFromMeta,
+    MetaScriptsBySide,
+    ResourceData,
+    simpleTsDiagnostic,
+} from './utils';
+import { generateResourceMetaContent } from './meta/writer';
+import { util } from 'prettier';
 
 const reportDiagnostic = createDiagnosticReporter(false);
 
@@ -12,7 +21,6 @@ const writeData: ts.WriteFileCallback = function (
     data,
     writeByteOrderMark,
     onError,
-    sourceFiles,
 ) {
     const dirname = path.dirname(fileName);
     fs.mkdirSync(dirname, { recursive: true });
@@ -28,34 +36,7 @@ const writeData: ts.WriteFileCallback = function (
     });
 };
 
-interface MetaScriptsBySide {
-    client: Script[];
-    server: Script[];
-}
-
-function getScriptsFromMeta(metaData: Readonly<MTASAMeta>): MetaScriptsBySide {
-    const result: MetaScriptsBySide = {
-        client: [],
-        server: [],
-    };
-    if (!metaData.scripts) {
-        return result;
-    }
-
-    for (const script of metaData.scripts) {
-        if (script.type === 'shared') {
-            result.client.push(script);
-            result.server.push(script);
-            continue;
-        }
-
-        result[script.type].push(script);
-    }
-
-    return result;
-}
-
-// TODO: get resource verbose name function
+// export function processScripts
 
 // TODO: WIP
 export function executeCompilerForAllResources(
@@ -65,85 +46,23 @@ export function executeCompilerForAllResources(
     let diagnosticResults: Diagnostic[] = [];
 
     for (const resourceMeta of metaData) {
-        const scripts = getScriptsFromMeta(resourceMeta);
+        const data = getResourceData(options, resourceMeta);
 
-        const newRootDir = path.join(
-            options.rootDir ?? '.',
-            resourceMeta.compilerConfig.srcDir,
+        const partialDiagnostics = compileResourceScripts(
+            options,
+            resourceMeta,
+            data,
         );
-        const newOutDir = path.join(
-            options.outDir ?? '.',
-            resourceMeta.compilerConfig.resourceDirectoryName ??
-                resourceMeta.compilerConfig.srcDir,
-        );
+        diagnosticResults = [...diagnosticResults, ...partialDiagnostics];
 
-        for (const key of Object.keys(scripts)) {
-            const newOptions = {
-                ...options,
-            };
-            const scriptList = scripts[key as keyof MetaScriptsBySide];
-
-            newOptions.rootDir = newRootDir;
-            newOptions.outDir = newOutDir;
-
-            if (newOptions.tstlVerbose) {
-                console.log(
-                    `Compiling ${key} scripts. Source directory: ${newOptions.rootDir}`,
-                );
-            }
-
-            const scriptsToBuild = scriptList.map(script =>
-                path.join(newRootDir, script.src).replace(/\\/g, '/'),
+        if (options.tstlVerbose) {
+            console.log(
+                `Generating meta.xml for "${data.verboseName}" resource`,
             );
-            const scriptsToBuildSet = new Set<string>();
-            scriptsToBuild.forEach(value =>
-                scriptsToBuildSet.add(path.resolve(value)),
-            );
-
-            const emittedScripts = new Set<string>();
-            const result = transpileFiles(
-                scriptsToBuild,
-                newOptions,
-                function (
-                    fileName,
-                    data,
-                    writeByteOrderMark,
-                    onError,
-                    sourceFiles,
-                ) {
-                    if (sourceFiles !== undefined) {
-                        for (const file of sourceFiles) {
-                            emittedScripts.add(path.resolve(file.fileName));
-                        }
-                    }
-
-                    writeData(
-                        fileName,
-                        data,
-                        writeByteOrderMark,
-                        onError,
-                        sourceFiles,
-                    );
-                },
-            );
-
-            for (const scriptPath of emittedScripts) {
-                if (scriptsToBuildSet.has(scriptPath)) {
-                    continue;
-                }
-
-                diagnosticResults.push({
-                    messageText: `File '${scriptPath}' is used, but not specified in mtasa-meta.yml`,
-                    code: 1,
-                    category: DiagnosticCategory.Error,
-                    file: undefined,
-                    length: undefined,
-                    start: undefined,
-                });
-            }
-
-            diagnosticResults = [...diagnosticResults, ...result.diagnostics];
         }
+        const metaContent = generateResourceMetaContent(resourceMeta);
+        const metaPath = path.join(data.outDir, 'meta.xml');
+        fs.writeFileSync(metaPath, metaContent);
     }
 
     if (diagnosticResults.length !== 0) {
@@ -153,4 +72,88 @@ export function executeCompilerForAllResources(
 
         return ts.sys.exit(ts.ExitStatus.DiagnosticsPresent_OutputsSkipped);
     }
+}
+
+/**
+ * Converts scripts, defined in `scripts` object into the result files
+ */
+export function compileResourceScripts(
+    options: Readonly<CompilerOptions>,
+    meta: Readonly<MTASAMeta>,
+    data: Readonly<ResourceData>,
+): Diagnostic[] {
+    const scripts = getScriptsFromMeta(meta);
+    let diagnosticResults: Diagnostic[] = [];
+
+    for (const key of Object.keys(scripts)) {
+        const newOptions = {
+            ...options,
+        };
+        const scriptList = scripts[key as keyof MetaScriptsBySide];
+
+        newOptions.rootDir = data.rootDir;
+        newOptions.outDir = data.outDir;
+
+        if (newOptions.tstlVerbose) {
+            console.log(
+                `Compiling ${key} scripts for "${data.verboseName}" resource...`,
+            );
+        }
+
+        const scriptsToBuild = scriptList
+            .filter(script => !script.bundled)
+            .map(script =>
+                path.join(data.rootDir, script.src).replace(/\\/g, '/'),
+            );
+        const scriptsToBuildSet = new Set<string>();
+        scriptsToBuild.forEach(value =>
+            scriptsToBuildSet.add(path.resolve(value)),
+        );
+
+        const emittedScripts = new Set<string>();
+        const result = transpileFiles(
+            scriptsToBuild,
+            newOptions,
+            function (
+                fileName,
+                content,
+                writeByteOrderMark,
+                onError,
+                sourceFiles,
+            ) {
+                if (sourceFiles !== undefined) {
+                    for (const file of sourceFiles) {
+                        emittedScripts.add(path.resolve(file.fileName));
+                    }
+                }
+
+                writeData(
+                    fileName,
+                    content,
+                    writeByteOrderMark,
+                    onError,
+                    sourceFiles,
+                );
+            },
+        );
+
+        for (const scriptPath of emittedScripts) {
+            if (scriptsToBuildSet.has(scriptPath)) {
+                continue;
+            }
+
+            diagnosticResults.push(
+                simpleTsDiagnostic(
+                    `File '${scriptPath}' is used, ` +
+                        `but not specified in mtasa-meta.yml ` +
+                        `for "${data.verboseName}" resource`,
+                    DiagnosticCategory.Error,
+                ),
+            );
+        }
+
+        diagnosticResults = [...diagnosticResults, ...result.diagnostics];
+    }
+
+    return diagnosticResults;
 }

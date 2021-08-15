@@ -56,172 +56,38 @@ export interface MTASAMeta {
      */
     scripts?: Script[];
     /**
-     * List of bundled scripts
-     */
-    bundledScripts?: {
-        /**
-         * TypeScript script file
-         */
-        src: string;
-        /**
-         * The type of source code
-         */
-        type: 'server' | 'client' | 'shared';
-        /**
-         * When the script file type is "client", this setting controls whether the file is saved on the clients' hard drive
-         */
-        cache?: boolean;
-        /**
-         * If set to "false", compatibility checks are skipped
-         */
-        validate?: boolean;
-    }[];
-    /**
      * Map definitions
      */
-    maps?: {
-        /**
-         * Must be in the resource source directory
-         */
-        src: string;
-        /**
-         * Dimension in which the map will be loaded
-         */
-        dimension?: number;
-    }[];
+    maps?: Map[];
     /**
      * File definitions
      */
-    files?: {
-        /**
-         * Client-side file name (can be path too eg. "images/image.png")
-         *
-         */
-        src: string;
-        /**
-         * Whether or not to be sent to the client automatically
-         */
-        download?: boolean;
-    }[];
+    files?: File[];
     /**
      * Include definitions
      */
-    includes?: {
-        /**
-         * Resource name that you want to start with this resource
-         */
-        resource: string;
-        /**
-         * Minimum version that resource needs to be
-         */
-        minVersion?: string;
-        /**
-         * Maximum version that resource needs to be
-         */
-        maxVersion?: string;
-    }[];
+    includes?: Include[];
     /**
      * Config definitions
      */
-    configs?: {
-        /**
-         * The file name of the config file
-         */
-        src: string;
-        /**
-         * The type of the config file
-         */
-        type: 'client' | 'server';
-    }[];
+    configs?: Config[];
     /**
      * Export definitions
      */
-    exports?: {
-        /**
-         * The function name
-         */
-        function: string;
-        /**
-         * Whether function is exported server-side or client-side
-         */
-        type: 'client' | 'server' | 'shared';
-        /**
-         * Can the function be called via HTTP
-         */
-        http?: boolean;
-    }[];
+    exports?: Export[];
     /**
      * HTML definitions
      */
-    htmls?: {
-        /**
-         * The filename for the HTTP file
-         */
-        src: string;
-        /**
-         * The html file is one that is shown by default when visiting /resourceName/ on the server. Only one html can be default, the rest are ignored
-         */
-        default: boolean;
-        /**
-         * The html file is not parsed by the Lua interpreter and is treated as binary data. Must be used for binary files
-         */
-        raw: boolean;
-    }[];
+    htmls?: Html[];
     /**
      * Most gamemodes use settings system to let server admins to configure it how they like. For instance you could set round time and then use get and set to get the value or change it, respectively.
      */
-    settings?: {
-        /**
-         * The setting name used by the scripts to get or set the setting value
-         */
-        name: string;
-        /**
-         * The setting default value used by the scripts
-         */
-        value: string;
-        /**
-         * A friendly name to the setting
-         */
-        friendlyName?: string;
-        /**
-         * The values the setting could accept
-         */
-        accept?: string;
-        /**
-         * An Example of a value
-         */
-        examples?: string;
-        /**
-         * A description of the setting
-         */
-        desc?: string;
-    }[];
-    /**
-     * Minimum version requirements for this resource to run correctly. When authoring resources, the minimum version should usually be set to the current released version of MTA:SA
-     */
-    minMtaVersion?: {
-        /**
-         * The minimum client version
-         */
-        client: string;
-        /**
-         * The minimum server version
-         */
-        server: string;
-    };
+    settings?: Setting[];
+    minMtaVersion?: MinMtaVersion;
     /**
      * A list of ACL rights this resource will need. Any user with admin permission can accept or reject a resource ACL request by using the command: /aclrequest [list/allow/deny] <resourceName>
      */
-    aclRequests?: {
-        /**
-         * The right name
-         */
-        name: string;
-        /**
-         * Set to true to allow the resource to access this right. Set to false to deny the access to this right
-         */
-        access: boolean;
-    }[];
+    aclRequests?: AclRequest[];
     /**
      * Controls whether map element data such as "PosX" and "DoubleSided" are transferred to the client. This data is usually not required by most gamemodes or resources. (Map Editor and Interiors require this to be not set to false to work). When set in a gamemode meta.xml, the setting will apply to all maps loaded by that resource.
      */
@@ -255,6 +121,156 @@ export interface Script {
      * If set to "false", compatibility checks are skipped
      */
     validate?: boolean;
+    /**
+     * Set to true, if you would like to bundle dependent TS files into a single one
+     */
+    bundled?: boolean;
+}
+/**
+ * The map for a gamemode
+ */
+export interface Map {
+    /**
+     * Must be in the resource source directory
+     */
+    src: string;
+    /**
+     * Dimension in which the map will be loaded
+     */
+    dimension?: number;
+}
+/**
+ * A client-side file. Generally these are images, .txd, .col, .dff or .xml files. They'll be downloaded by clients when the resources is started (or on join
+ */
+export interface File {
+    /**
+     * Client-side file name (can be path too eg. "images/image.png")
+     *
+     */
+    src: string;
+    /**
+     * Whether or not to be sent to the client automatically
+     */
+    download?: boolean;
+}
+/**
+ * Include resources that this resource will use
+ */
+export interface Include {
+    /**
+     * Resource name that you want to start with this resource
+     */
+    resource: string;
+    /**
+     * Minimum version that resource needs to be
+     */
+    minVersion?: string;
+    /**
+     * Maximum version that resource needs to be
+     */
+    maxVersion?: string;
+}
+/**
+ * Config file (.xml) can be accessed by resource
+ */
+export interface Config {
+    /**
+     * The file name of the config file
+     */
+    src: string;
+    /**
+     * The type of the config file
+     */
+    type: 'client' | 'server';
+}
+/**
+ * This exports functions from this resource, so other resources can use them with call
+ */
+export interface Export {
+    /**
+     * The function name
+     */
+    function: string;
+    /**
+     * Whether function is exported server-side or client-side
+     */
+    type: 'client' | 'server' | 'shared';
+    /**
+     * Can the function be called via HTTP
+     */
+    http?: boolean;
+}
+/**
+ * HTML file
+ */
+export interface Html {
+    /**
+     * The filename for the HTTP file
+     */
+    src: string;
+    /**
+     * The html file is one that is shown by default when visiting /resourceName/ on the server. Only one html can be default, the rest are ignored
+     */
+    default: boolean;
+    /**
+     * The html file is not parsed by the Lua interpreter and is treated as binary data. Must be used for binary files
+     */
+    raw: boolean;
+}
+/**
+ * Resource settings can be accessed by resource and Admin panel
+ */
+export interface Setting {
+    /**
+     * The setting name used by the scripts to get or set the setting value
+     */
+    name: string;
+    /**
+     * The setting default value used by the scripts
+     */
+    value: string;
+    /**
+     * A friendly name to the setting
+     */
+    friendlyName?: string;
+    /**
+     * The values the setting could accept
+     */
+    accept?: string;
+    /**
+     * An Example of a value
+     */
+    examples?: string;
+    /**
+     * A description of the setting
+     */
+    desc?: string;
+}
+/**
+ * Minimum version requirements for this resource to run correctly. When authoring resources, the minimum version should usually be set to the current released version of MTA:SA
+ */
+export interface MinMtaVersion {
+    /**
+     * The minimum client version
+     */
+    client: string;
+    /**
+     * The minimum server version
+     */
+    server: string;
+}
+/**
+ * An individual right
+ */
+export interface AclRequest {
+    /**
+     * The right name
+     */
+    name: string;
+    /**
+     * Set to true to allow the resource to access this right. Set to false to deny the access to this right
+     */
+    access: boolean;
 }
 /**
  * XML Tag
@@ -267,18 +283,11 @@ export interface XMLTagData {
     /**
      * XML Tag value
      */
-    value?: string | XMLTagData;
+    value?: string | XMLTagData[];
     /**
      * XML Tag properties
      */
     properties?: {
-        /**
-         * XML Tag Property key
-         */
-        key?: string;
-        /**
-         * XML Tag Property value
-         */
-        value?: string;
-    }[];
+        [k: string]: string;
+    };
 }

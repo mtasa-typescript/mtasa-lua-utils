@@ -12,6 +12,8 @@ import {
 import { readMeta } from './compiler/meta/reader';
 import { locateConfigFile } from 'typescript-to-lua/dist/cli/tsconfig';
 import { executeCompilerForAllResources } from './compiler/compile';
+import fs from 'fs';
+import { js2xml, xml2js } from 'xml-js';
 
 const reportDiagnostic = createDiagnosticReporter(false);
 

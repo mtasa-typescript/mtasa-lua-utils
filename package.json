@@ -57,6 +57,7 @@
         "js-yaml": "^4.1.0",
         "json5": "^2.2.0",
         "jsonschema": "^1.4.0",
-        "typescript-to-lua": "^0.42.0"
+        "typescript-to-lua": "^0.42.0",
+        "xml-js": "^1.6.11"
     }
 }
