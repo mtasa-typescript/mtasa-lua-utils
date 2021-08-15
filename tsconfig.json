@@ -22,9 +22,8 @@
         "noImplicitSelf": true,
         // Provides debug.traceback function
         "sourceMapTraceback": true,
+        //
+        "luaLibImport": "always",
         "tstlVerbose": true
-        //        "luaPlugins": [
-        //            { "name": "./dist/ast/examplePlugin.js" }
-        //        ]
     }
 }

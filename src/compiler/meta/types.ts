@@ -50,6 +50,14 @@ export interface MTASAMeta {
          * Output directory name
          */
         resourceDirectoryName?: string;
+        /**
+         * Show comments in the meta.xml file
+         */
+        outMetaComments?: boolean;
+        /**
+         * Show additional properties (not included in the default meta.xml) in the meta.xml file
+         */
+        outMetaAdditionalProperties?: boolean;
     };
     /**
      * List of scripts
@@ -152,6 +160,10 @@ export interface File {
      * Whether or not to be sent to the client automatically
      */
     download?: boolean;
+    /**
+     * Perform file-existence check on compile
+     */
+    doCompileCheck?: boolean;
 }
 /**
  * Include resources that this resource will use

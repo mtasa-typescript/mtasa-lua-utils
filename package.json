@@ -36,8 +36,8 @@
         "mtasa-ts-build": "./dist/mtasa-ts-build.js"
     },
     "files": [
-        "transformer/**/*",
-        "utils/**/*"
+        "dist/**/*",
+        "*.schema.json"
     ],
     "devDependencies": {
         "@types/js-yaml": "^4.0.2",

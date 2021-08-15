@@ -2,7 +2,7 @@ import { MTASAMeta, Script } from './meta/types';
 import { CompilerOptions } from './cli';
 import { normalizeSlashes } from 'typescript-to-lua/dist/utils';
 import path from 'path';
-import { Diagnostic, DiagnosticCategory } from 'typescript';
+import ts, { Diagnostic, DiagnosticCategory } from 'typescript';
 
 export interface MetaScriptsBySide {
     client: Script[];
@@ -87,4 +87,17 @@ export function simpleTsDiagnostic(
         length: undefined,
         start: undefined,
     };
+}
+
+export function showDiagnosticAndExit(
+    diagnosticResults: readonly Diagnostic[],
+    reportDiagnostic: (d: Diagnostic) => void,
+): void {
+    if (diagnosticResults.length !== 0) {
+        for (const diagnostic of diagnosticResults) {
+            reportDiagnostic(diagnostic);
+        }
+
+        return ts.sys.exit(ts.ExitStatus.DiagnosticsPresent_OutputsSkipped);
+    }
 }

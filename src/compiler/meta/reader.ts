@@ -3,11 +3,16 @@ import * as yaml from 'js-yaml';
 import { Validator, ValidatorResult } from 'jsonschema';
 import { MTASAMeta } from './types';
 import * as JSON5 from 'json5';
+import path from 'path';
 
 class MetaReaderError extends Error {}
 
 export function validateMeta(data: MTASAMeta): ValidatorResult {
-    const schemaContent = fs.readFileSync('mtasa-meta.schema.json', 'utf8');
+    const schemaPath = path.resolve(
+        __dirname,
+        '../../../mtasa-meta.schema.json',
+    );
+    const schemaContent = fs.readFileSync(schemaPath, 'utf8');
     const schema = JSON5.parse(schemaContent);
 
     const validator = new Validator();
