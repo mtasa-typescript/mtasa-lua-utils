@@ -20,7 +20,7 @@
     },
     "type": "commonjs",
     "scripts": {
-        "prebuild": "convert-schema",
+        "prebuild": "npm run convert-schema",
         "build": "tsc --build",
         "watch": "tsc --build --watch",
         "test": "echo \"Error: no test specified\" && exit 1",
