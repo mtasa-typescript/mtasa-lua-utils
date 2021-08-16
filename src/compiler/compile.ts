@@ -19,6 +19,7 @@ import {
 import { generateResourceMetaContent } from './meta/writer';
 import { validateOptions } from './validate';
 import { normalizeSlashes } from 'typescript-to-lua/dist/utils';
+import { getPlugins } from './plugins';
 
 const reportDiagnostic = createDiagnosticReporter(false);
 
@@ -143,6 +144,7 @@ export function compileResourceBundledScripts(
             luaLibImport: LuaLibImportKind.Require,
             rootDir: data.rootDir,
             outDir: data.outDir,
+            luaPlugins: [...(options.luaPlugins ?? []), ...getPlugins(true)],
         };
         const scriptList = scripts[key as keyof MetaScriptsBySide];
 
@@ -200,6 +202,7 @@ export function compileResourceScripts(
             ...options,
             rootDir: data.rootDir,
             outDir: data.outDir,
+            luaPlugins: [...(options.luaPlugins ?? []), ...getPlugins(false)],
         };
         const scriptList = scripts[key as keyof MetaScriptsBySide];
 

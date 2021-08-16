@@ -10,10 +10,6 @@ compilerConfig:
 
 scripts:
     - src: index.ts
-      type: client
-      cache: false
-      bundled: true
-    - src: index.ts
       type: server
     - src: imported.ts
       type: server

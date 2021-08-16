@@ -1,8 +1,11 @@
 import * as ts from 'typescript';
 import { isImportNode } from './anti_import';
-import { fileSideDetection, ImportTypesSide } from './script_side_detection';
+// import { fileSideDetection, ImportTypesSide } from './script_side_detection';
 import { exportToGlobal } from './global_export';
 import removeExportModifierIfPossible from './remove_export_modifier';
+
+const fileSideDetection: any = null;
+type ImportTypesSide = any;
 
 export default function (
     _program: ts.Program,

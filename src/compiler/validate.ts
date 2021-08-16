@@ -1,11 +1,12 @@
 import { CompilerOptions } from './cli';
 import { Diagnostic, DiagnosticCategory } from 'typescript';
 import { simpleTsDiagnostic } from './utils';
+import { LuaTarget } from 'typescript-to-lua';
 
 type ValidatorFunction = (options: Readonly<CompilerOptions>) => Diagnostic[];
 
 const validateLuaTarget: ValidatorFunction = function (options) {
-    if (options.luaTarget === '5.1') {
+    if (options.luaTarget === LuaTarget.Lua51) {
         return [];
     }
 

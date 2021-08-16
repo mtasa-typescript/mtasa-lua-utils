@@ -46,6 +46,7 @@
         "@typescript-eslint/parser": "^4.29.1",
         "eslint": "^7.32.0",
         "json-schema-to-typescript": "^10.1.4",
+        "mtasa-lua-types": "^0.6.3",
         "prettier": "^2.3.2",
         "ts-node": "^9.1.1",
         "ttypescript": "^1.5.12",
