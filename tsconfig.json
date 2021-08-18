@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/vscode-typescript-to-lua/master/tsconfig-schema.json",
     "compilerOptions": {
         "target": "ES6",
         "lib": ["es6"],
@@ -22,8 +23,9 @@
         "noImplicitSelf": true,
         // Provides debug.traceback function
         "sourceMapTraceback": true,
-        //
+        // Lualib should be always included in the resource
         "luaLibImport": "always",
+        // Verbose output
         "tstlVerbose": true
     }
 }

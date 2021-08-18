@@ -10,6 +10,7 @@ import {
     VariableDeclarationStatement,
 } from 'typescript-to-lua';
 import * as ts from 'typescript';
+import { DiagnosticCategory } from 'typescript';
 
 import { FunctionVisitor } from 'typescript-to-lua/dist/transformation/context/visitors';
 import { transformFunctionDeclaration } from 'typescript-to-lua/dist/transformation/visitors/function';
@@ -21,13 +22,18 @@ import {
 import { Expression } from 'typescript-to-lua/dist/LuaAST';
 import { getIdentifierSymbolId } from 'typescript-to-lua/dist/transformation/utils/symbols';
 import { transformSourceFileNode } from 'typescript-to-lua/dist/transformation/visitors/sourceFile';
+import {
+    transformExportAssignment,
+    transformExportDeclaration,
+} from 'typescript-to-lua/dist/transformation/visitors/modules/export';
+import { simpleTsDiagnostic } from '../compiler/utils';
 
-// TODO: make configurable
 interface ImportSpecifierToGlobalTable {
     namePattern: RegExp;
     modulePattern: RegExp;
 }
 
+// TODO: make configurable
 const importSpecifiersMapToGlobalTable: ImportSpecifierToGlobalTable[] = [
     {
         namePattern: /^mtasa$/,
@@ -159,12 +165,34 @@ const sourceFileRemoveExports: FunctionVisitor<ts.SourceFile> = function (
     return result;
 };
 
+const removeExportDeclaration: FunctionVisitor<ts.ExportDeclaration> =
+    function (node, context) {
+        const result = transformExportDeclaration(node, context);
+        // TODO: change `____exports.XYZ` to `_G.XYZ`
+        return result;
+    };
+
+const removeExportAssignment: FunctionVisitor<ts.ExportAssignment> = function (
+    node,
+    context,
+) {
+    context.diagnostics.push(
+        simpleTsDiagnostic(
+            `Do not use export assignments (file: ${context.sourceFile.fileName})`,
+            DiagnosticCategory.Warning,
+        ),
+    );
+    return transformExportAssignment(node, context);
+};
+
 export default {
     // `visitors` is a record where keys are TypeScript node syntax kinds
     visitors: {
         // Visitor can be a function that returns Lua AST node
         [ts.SyntaxKind.SourceFile]: sourceFileRemoveExports,
         [ts.SyntaxKind.ImportDeclaration]: importDeclarationVisitor,
+        [ts.SyntaxKind.ExportDeclaration]: removeExportDeclaration,
+        [ts.SyntaxKind.ExportAssignment]: removeExportAssignment,
         [ts.SyntaxKind.FunctionDeclaration]: functionDeclarationAntiExport,
     },
 } as Plugin;
