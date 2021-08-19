@@ -1,13 +1,16 @@
 import {
+    AssignmentStatement,
     createIdentifier,
     createVariableDeclarationStatement,
     Identifier,
     Plugin,
     ReturnStatement,
+    Statement,
     SyntaxKind,
     TableIndexExpression,
     TransformationContext,
     VariableDeclarationStatement,
+    Visitor,
 } from 'typescript-to-lua';
 import * as ts from 'typescript';
 import { DiagnosticCategory } from 'typescript';
@@ -27,6 +30,8 @@ import {
     transformExportDeclaration,
 } from 'typescript-to-lua/dist/transformation/visitors/modules/export';
 import { simpleTsDiagnostic } from '../compiler/utils';
+import { transformVariableStatement } from 'typescript-to-lua/dist/transformation/visitors/variable-declaration';
+import { transformClassDeclaration } from 'typescript-to-lua/dist/transformation/visitors/class';
 
 interface ImportSpecifierToGlobalTable {
     namePattern: RegExp;
@@ -97,42 +102,54 @@ const importDeclarationVisitor: FunctionVisitor<ts.ImportDeclaration> =
         ];
     };
 
+function statementListAntiExport(
+    statements: Statement[] | Statement | undefined,
+): Statement[] {
+    const result = prepareOneToManyVisitorResult(statements);
+
+    for (const statement of result) {
+        if (statement.kind !== SyntaxKind.AssignmentStatement) {
+            continue;
+        }
+
+        const declaration = statement as VariableDeclarationStatement;
+        const left: Expression[] = declaration.left;
+        if (left[0].kind !== SyntaxKind.TableIndexExpression) {
+            continue;
+        }
+
+        const expression = left[0] as TableIndexExpression;
+        if (expression.table.kind !== SyntaxKind.Identifier) {
+            continue;
+        }
+
+        const tableIdentifier = expression.table as Identifier;
+        if (tableIdentifier.text !== getExportsTableName()) {
+            continue;
+        }
+
+        tableIdentifier.text = getGlobalsTableName();
+    }
+
+    return result;
+}
+
 const functionDeclarationAntiExport: FunctionVisitor<ts.FunctionDeclaration> =
     function (node, context) {
         const rawResult = transformFunctionDeclaration(node, context);
-        const result = prepareOneToManyVisitorResult(rawResult);
+        return statementListAntiExport(rawResult);
+    };
 
-        if (result === undefined) {
-            return result;
-        }
+const variableStatementAntiExport: FunctionVisitor<ts.VariableStatement> =
+    function (node, context) {
+        const rawResult = transformVariableStatement(node, context);
+        return statementListAntiExport(rawResult);
+    };
 
-        for (const statement of result) {
-            if (statement.kind !== SyntaxKind.AssignmentStatement) {
-                continue;
-            }
-
-            const declaration = statement as VariableDeclarationStatement;
-            const left: Expression[] = declaration.left;
-            if (left[0].kind !== SyntaxKind.TableIndexExpression) {
-                continue;
-            }
-
-            const expression = left[0] as TableIndexExpression;
-            if (expression.table.kind !== SyntaxKind.Identifier) {
-                continue;
-            }
-
-            const tableIdentifier = expression.table as Identifier;
-            if (tableIdentifier.text !== getExportsTableName()) {
-                continue;
-            }
-
-            tableIdentifier.text = getGlobalsTableName();
-        }
-
-        // const a:AssignmentStatement;
-
-        return result;
+const classDeclarationAntiExport: FunctionVisitor<ts.ClassLikeDeclaration> =
+    function (node, context) {
+        const rawResult = transformClassDeclaration(node, context);
+        return statementListAntiExport(rawResult as any); // FIXME TODO
     };
 
 const sourceFileRemoveExports: FunctionVisitor<ts.SourceFile> = function (
@@ -147,7 +164,7 @@ const sourceFileRemoveExports: FunctionVisitor<ts.SourceFile> = function (
             return !(
                 declaration.left.length > 0 &&
                 declaration.left[0].kind === SyntaxKind.Identifier &&
-                declaration.left[0].text === '____exports'
+                declaration.left[0].text.indexOf('exports') !== -1
             );
         }
         if (statement.kind === SyntaxKind.ReturnStatement) {
@@ -155,8 +172,9 @@ const sourceFileRemoveExports: FunctionVisitor<ts.SourceFile> = function (
             return !(
                 declaration.expressions.length > 0 &&
                 declaration.expressions[0].kind === SyntaxKind.Identifier &&
-                (declaration.expressions[0] as Identifier).text ===
-                    '____exports'
+                (declaration.expressions[0] as Identifier).text.indexOf(
+                    'exports',
+                ) !== -1
             );
         }
 
@@ -167,8 +185,35 @@ const sourceFileRemoveExports: FunctionVisitor<ts.SourceFile> = function (
 
 const removeExportDeclaration: FunctionVisitor<ts.ExportDeclaration> =
     function (node, context) {
-        const result = transformExportDeclaration(node, context);
-        // TODO: change `____exports.XYZ` to `_G.XYZ`
+        const rawResult = transformExportDeclaration(node, context);
+        const result = prepareOneToManyVisitorResult(rawResult);
+
+        for (const statement of result) {
+            if (statement.kind !== SyntaxKind.AssignmentStatement) {
+                continue;
+            }
+
+            const assignment = statement as AssignmentStatement;
+            if (assignment.left.length === 0) {
+                continue;
+            }
+            if (assignment.left[0].kind !== SyntaxKind.TableIndexExpression) {
+                continue;
+            }
+
+            const expression = assignment.left[0] as TableIndexExpression;
+            if (expression.table.kind !== 28) {
+                continue;
+            }
+
+            const tableIdentifier = expression.table as Identifier;
+            if (tableIdentifier.text.indexOf('exports') === -1) {
+                continue;
+            }
+            tableIdentifier.text = '_G';
+        }
+
+        // result[0].
         return result;
     };
 
@@ -194,5 +239,7 @@ export default {
         [ts.SyntaxKind.ExportDeclaration]: removeExportDeclaration,
         [ts.SyntaxKind.ExportAssignment]: removeExportAssignment,
         [ts.SyntaxKind.FunctionDeclaration]: functionDeclarationAntiExport,
+        [ts.SyntaxKind.VariableStatement]: variableStatementAntiExport,
+        [ts.SyntaxKind.ClassDeclaration]: classDeclarationAntiExport,
     },
 } as Plugin;

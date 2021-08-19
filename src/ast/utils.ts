@@ -6,9 +6,9 @@ import { Node } from 'typescript-to-lua';
 
 export function prepareOneToManyVisitorResult<P extends Node>(
     rawResult: OneToManyVisitorResult<P>,
-): P[] | undefined {
+): P[] {
     if (rawResult === undefined) {
-        return rawResult;
+        return [];
     }
 
     if (Array.isArray(rawResult)) {
