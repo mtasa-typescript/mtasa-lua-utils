@@ -7,11 +7,30 @@ export function getPluginPath(pluginLocalPath: string): string {
 
 const plugins: LuaPluginImport[] = [
     {
-        name: getPluginPath('examplePlugin.js'),
+        name: getPluginPath('removeImports.js'),
+    },
+    {
+        name: getPluginPath('prepareImports.js'),
+    },
+    {
+        name: getPluginPath('removeExportAssignment.js'),
+    },
+    {
+        name: getPluginPath('removeExportDeclaration.js'),
+    },
+    {
+        name: getPluginPath('removeFileExports.js'),
+    },
+    {
+        name: getPluginPath('removeInlinedExport.js'),
     },
 ];
 
-const pluginsBundle: LuaPluginImport[] = [];
+const pluginsBundle: LuaPluginImport[] = [
+    {
+        name: getPluginPath('prepareImports.js'),
+    },
+];
 
 export function getPlugins(isBundleCompile: boolean): LuaPluginImport[] {
     if (isBundleCompile) {
