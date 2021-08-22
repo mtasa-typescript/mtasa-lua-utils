@@ -101,3 +101,24 @@ export function showDiagnosticAndExit(
         return ts.sys.exit(ts.ExitStatus.DiagnosticsPresent_OutputsSkipped);
     }
 }
+
+export function extendOptions(
+    options: Readonly<CompilerOptions>,
+    meta: Readonly<MTASAMeta>,
+    data: Readonly<ResourceData>,
+): CompilerOptions {
+    return {
+        ...options,
+        resourceSpecific: {
+            ...meta.compilerConfig,
+        },
+        rootDir: data.rootDir,
+        outDir: data.outDir,
+    };
+}
+
+export function getEmptyTsFilePath(): string {
+    return normalizeSlashes(
+        path.join(__dirname, '../../src/compiler/empty.ts'),
+    );
+}

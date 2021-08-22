@@ -13,9 +13,10 @@ import {
     XMLTagData,
 } from './types';
 import { Element, js2xml } from 'xml-js';
-import { ResourceData } from '../utils';
+import { ResourceData, simpleTsDiagnostic } from '../utils';
 import fs from 'fs';
 import path from 'path';
+import { Diagnostic, DiagnosticCategory } from 'typescript';
 
 export const LUA_LIB_FILENAME = 'lualib_bundle.lua';
 
@@ -321,19 +322,32 @@ export function generateResourceMetaObject(
 export function generateResourceMetaContent(
     meta: MTASAMeta,
     data: ResourceData,
-): string {
+): {
+    content: string;
+    diagnostics: Diagnostic[];
+} {
     const jsMeta = generateResourceMetaObject(meta, data);
     if (jsMeta.elements === undefined || jsMeta.elements.length === 0) {
-        // TODO: throw fatal error or diagnose
-        return '<meta><info name="Generation error happened" /></meta>';
+        return {
+            content: '<meta><info name="Generation error happened" /></meta>',
+            diagnostics: [
+                simpleTsDiagnostic(
+                    'Internal error: meta.xml contains no objects',
+                    DiagnosticCategory.Error,
+                ),
+            ],
+        };
     }
 
     jsMeta.elements[0].elements = jsMeta.elements?.[0].elements?.filter(
         element => Object.keys(element).length > 0,
     );
 
-    return js2xml(jsMeta, {
-        compact: false,
-        spaces: 4,
-    });
+    return {
+        content: js2xml(jsMeta, {
+            compact: false,
+            spaces: 4,
+        }),
+        diagnostics: [],
+    };
 }

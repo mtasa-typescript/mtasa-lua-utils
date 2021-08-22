@@ -52,20 +52,20 @@ function statementListAntiExport(
 
 const functionDeclarationAntiExport: FunctionVisitor<ts.FunctionDeclaration> =
     function (node, context) {
-        const rawResult = transformFunctionDeclaration(node, context);
+        const rawResult = context.superTransformStatements(node);
         return statementListAntiExport(rawResult);
     };
 
 const variableStatementAntiExport: FunctionVisitor<ts.VariableStatement> =
     function (node, context) {
-        const rawResult = transformVariableStatement(node, context);
+        const rawResult = context.superTransformStatements(node);
         return statementListAntiExport(rawResult);
     };
 
-const classDeclarationAntiExport: FunctionVisitor<ts.ClassLikeDeclaration> =
+const classDeclarationAntiExport: FunctionVisitor<ts.ClassDeclaration> =
     function (node, context) {
-        const rawResult = transformClassDeclaration(node, context);
-        return statementListAntiExport(rawResult as any); // FIXME TODO
+        const rawResult = context.superTransformStatements(node);
+        return statementListAntiExport(rawResult);
     };
 
 export default {

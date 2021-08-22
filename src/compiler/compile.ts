@@ -9,6 +9,8 @@ import {
     transpileFiles,
 } from 'typescript-to-lua';
 import {
+    extendOptions,
+    getEmptyTsFilePath,
     getResourceData,
     getScriptsFromMeta,
     MetaScriptsBySide,
@@ -43,9 +45,6 @@ const writeData: ts.WriteFileCallback = function (
     });
 };
 
-// export function processScripts
-
-// TODO: WIP
 export function executeCompilerForAllResources(
     options: Readonly<CompilerOptions>,
     metaData: readonly MTASAMeta[],
@@ -56,11 +55,10 @@ export function executeCompilerForAllResources(
     for (const resourceMeta of metaData) {
         const data = getResourceData(options, resourceMeta);
 
-        let partialDiagnostics = compileAttachedFiles(
-            options,
-            resourceMeta,
-            data,
-        );
+        let partialDiagnostics = compileLuaLib(options, resourceMeta, data);
+        showDiagnosticAndExit(partialDiagnostics, reportDiagnostic);
+
+        partialDiagnostics = compileAttachedFiles(options, resourceMeta, data);
         showDiagnosticAndExit(partialDiagnostics, reportDiagnostic);
 
         partialDiagnostics = compileResourceScripts(
@@ -82,7 +80,10 @@ export function executeCompilerForAllResources(
                 `Generating meta.xml for "${data.verboseName}" resource`,
             );
         }
-        const metaContent = generateResourceMetaContent(resourceMeta, data);
+        const { content: metaContent, diagnostics: metaDiagnostics } =
+            generateResourceMetaContent(resourceMeta, data);
+        showDiagnosticAndExit(metaDiagnostics, reportDiagnostic);
+
         const metaPath = path.join(data.outDir, 'meta.xml');
         fs.writeFileSync(metaPath, metaContent);
     }
@@ -128,6 +129,63 @@ export function compileAttachedFiles(
 }
 
 /**
+ * Compiles lualib_bundle.lua
+ */
+export function compileLuaLib(
+    options: Readonly<CompilerOptions>,
+    meta: Readonly<MTASAMeta>,
+    data: Readonly<ResourceData>,
+): Diagnostic[] {
+    if (meta.scripts === undefined || meta.scripts.length === 0) {
+        console.log(
+            `No scripts defined in the meta file.\n` +
+                `Skipped compiling lualib_bundle.lua for "${data.verboseName}" resource...`,
+        );
+        return [];
+    }
+
+    let diagnosticResults: Diagnostic[] = [];
+    const newOptions: CompilerOptions = {
+        ...extendOptions(options, meta, data),
+        rootDir: path.dirname(getEmptyTsFilePath()),
+        luaLibImport: LuaLibImportKind.Always,
+    };
+
+    if (options.tstlVerbose) {
+        console.log(
+            `Compiling lualib_bundle.lua for "${data.verboseName}" resource...`,
+        );
+    }
+
+    const { diagnostics } = transpileFiles(
+        [getEmptyTsFilePath()],
+        newOptions,
+        function (
+            fileName,
+            dataWrite,
+            writeByteOrderMark,
+            onError,
+            sourceFiles,
+        ) {
+            if (!fileName.endsWith('lualib_bundle.lua')) {
+                return;
+            }
+
+            return writeData(
+                fileName,
+                dataWrite,
+                writeByteOrderMark,
+                onError,
+                sourceFiles,
+            );
+        },
+    );
+
+    diagnosticResults = [...diagnosticResults, ...diagnostics];
+    return diagnosticResults;
+}
+
+/**
  * Converts scripts, defined in `scripts` object into the result files
  */
 export function compileResourceBundledScripts(
@@ -140,13 +198,8 @@ export function compileResourceBundledScripts(
 
     for (const key of Object.keys(scripts)) {
         const newOptions: CompilerOptions = {
-            ...options,
-            resourceSpecific: {
-                ...meta.compilerConfig,
-            },
+            ...extendOptions(options, meta, data),
             luaLibImport: LuaLibImportKind.Require,
-            rootDir: data.rootDir,
-            outDir: data.outDir,
             luaPlugins: [...(options.luaPlugins ?? []), ...getPlugins(true)],
         };
         const scriptList = scripts[key as keyof MetaScriptsBySide];
@@ -202,12 +255,8 @@ export function compileResourceScripts(
 
     for (const key of Object.keys(scripts)) {
         const newOptions: CompilerOptions = {
-            ...options,
-            resourceSpecific: {
-                ...meta.compilerConfig,
-            },
-            rootDir: data.rootDir,
-            outDir: data.outDir,
+            ...extendOptions(options, meta, data),
+            luaLibImport: LuaLibImportKind.None,
             luaPlugins: [...(options.luaPlugins ?? []), ...getPlugins(false)],
         };
         const scriptList = scripts[key as keyof MetaScriptsBySide];
