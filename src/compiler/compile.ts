@@ -141,6 +141,9 @@ export function compileResourceBundledScripts(
     for (const key of Object.keys(scripts)) {
         const newOptions: CompilerOptions = {
             ...options,
+            resourceSpecific: {
+                ...meta.compilerConfig,
+            },
             luaLibImport: LuaLibImportKind.Require,
             rootDir: data.rootDir,
             outDir: data.outDir,
@@ -200,6 +203,9 @@ export function compileResourceScripts(
     for (const key of Object.keys(scripts)) {
         const newOptions: CompilerOptions = {
             ...options,
+            resourceSpecific: {
+                ...meta.compilerConfig,
+            },
             rootDir: data.rootDir,
             outDir: data.outDir,
             luaPlugins: [...(options.luaPlugins ?? []), ...getPlugins(false)],

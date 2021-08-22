@@ -1,8 +1,10 @@
 import * as tstl from 'typescript-to-lua';
 import { optionDeclarations } from 'typescript-to-lua/dist/cli/parse';
+import { MTASAMeta } from './meta/types';
 
 export interface CompilerOptions extends tstl.CompilerOptions {
     meta?: string;
+    resourceSpecific?: MTASAMeta['compilerConfig'];
 }
 
 export interface ParsedCommandLine extends tstl.ParsedCommandLine {
