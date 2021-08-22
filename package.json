@@ -23,7 +23,6 @@
         "prebuild": "npm run convert-schema",
         "build": "tsc --build",
         "watch": "tsc --build --watch",
-        "test": "echo \"Error: no test specified\" && exit 1",
         "prettier": "prettier --check .",
         "eslint": "eslint --max-warnings=0 .",
         "prettier-fix": "prettier --write .",
