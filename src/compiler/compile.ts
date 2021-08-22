@@ -54,6 +54,7 @@ export function executeCompilerForAllResources(
 
     for (const resourceMeta of metaData) {
         const data = getResourceData(options, resourceMeta);
+        fs.mkdirSync(data.outDir, { recursive: true });
 
         let partialDiagnostics = compileLuaLib(options, resourceMeta, data);
         showDiagnosticAndExit(partialDiagnostics, reportDiagnostic);

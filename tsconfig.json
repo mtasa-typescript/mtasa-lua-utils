@@ -3,7 +3,7 @@
     "compilerOptions": {
         "target": "ES6",
         "lib": ["es6"],
-        "module": "commonjs",
+        "module": "CommonJS",
         "rootDir": "src",
         "outDir": "dist",
         "strict": true,
@@ -27,5 +27,6 @@
         "luaLibImport": "always",
         // Verbose output
         "tstlVerbose": true
-    }
+    },
+    "include": ["src/**/*"]
 }
