@@ -1,0 +1,14 @@
+info:
+    name: ExportAssignment
+    type: script
+
+compilerConfig:
+    srcDir: tests\resources.spec\exportAssignment
+
+scripts:
+    - src: imported.ts
+      cache: false
+      type: client
+    - src: index.ts
+      cache: false
+      type: client

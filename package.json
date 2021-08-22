@@ -29,7 +29,6 @@
         "prettier-fix": "prettier --write .",
         "convert-schema": "node utils/convert-schema.js && prettier --write src/compiler/meta/types.ts",
         "create-test": "node utils/create-test.js",
-        "demo": "node dist/mtasa-ts-build.js",
         "tstl": "tstl"
     },
     "bin": {

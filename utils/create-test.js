@@ -107,7 +107,7 @@ describe('Case "${name}"${
 
 promptTestData()
     .then(data => {
-        const rootPath = 'src/tests/resources.spec';
+        const rootPath = 'tests/resources.spec';
         const directory = path.join(rootPath, data.directory);
         const resourceAmount = data.resourceAmount;
         fs.mkdirSync(directory, { recursive: true });

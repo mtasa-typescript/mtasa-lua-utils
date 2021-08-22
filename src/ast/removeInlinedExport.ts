@@ -14,13 +14,8 @@ import {
 } from './utils';
 import { Expression } from 'typescript-to-lua/dist/LuaAST';
 import { FunctionVisitor } from 'typescript-to-lua/dist/transformation/context/visitors';
-import { transformFunctionDeclaration } from 'typescript-to-lua/dist/transformation/visitors/function';
-import { transformVariableStatement } from 'typescript-to-lua/dist/transformation/visitors/variable-declaration';
-import { transformClassDeclaration } from 'typescript-to-lua/dist/transformation/visitors/class';
 
-function statementListAntiExport(
-    statements: Statement[] | Statement | undefined,
-): Statement[] {
+function statementListAntiExport(statements: Statement[]): Statement[] {
     const result = prepareOneToManyVisitorResult(statements);
 
     for (const statement of result) {

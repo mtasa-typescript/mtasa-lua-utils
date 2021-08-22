@@ -1,8 +1,8 @@
 import * as ts from 'typescript';
+import { DiagnosticCategory } from 'typescript';
 import { Plugin } from 'typescript-to-lua';
 import { FunctionVisitor } from 'typescript-to-lua/dist/transformation/context/visitors';
 import { simpleTsDiagnostic } from '../compiler/utils';
-import { DiagnosticCategory } from 'typescript';
 import { transformExportAssignment } from 'typescript-to-lua/dist/transformation/visitors/modules/export';
 
 const removeExportAssignment: FunctionVisitor<ts.ExportAssignment> = function (

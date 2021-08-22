@@ -9,23 +9,31 @@ export interface CompilerProcessContext {
 export function callCompilerWithMetaPathBeforeAll(
     filepath: string,
     context: CompilerProcessContext,
+    expectedError = false,
 ): void {
     return callCompilerWithCustomArgsBeforeAll(
         ['--meta', `"${filepath}"`],
         context,
+        expectedError,
     );
 }
 
 export function callCompilerWithCustomArgsBeforeAll(
     args: string[],
     context: CompilerProcessContext,
+    expectedError = false,
 ): void {
     return beforeAll(callback => {
         child_process.exec(
             `node dist/mtasa-ts-build.js ${args.join(' ')}`,
             function (error, stdout, stderr) {
-                if (error) {
-                    callback(error);
+                if (!!error !== expectedError) {
+                    console.log('stdout:', stdout);
+                    console.error('stderr:', stderr);
+                    callback(
+                        error ??
+                            'Expected an error, got successfully completed process',
+                    );
                     return;
                 }
 

@@ -6,7 +6,6 @@ import {
     Plugin,
 } from 'typescript-to-lua';
 import { getIdentifierSymbolId } from 'typescript-to-lua/dist/transformation/utils/symbols';
-import { transformImportDeclaration } from 'typescript-to-lua/dist/transformation/visitors/modules/import';
 
 interface ImportSpecifierToGlobalTable {
     namePattern: RegExp;
@@ -46,12 +45,28 @@ const prepareGlobalImports: FunctionVisitor<ts.ImportDeclaration> = function (
         );
 
     if (specifiers.length === 0) {
-        return [];
+        return namedImports.elements
+            .filter(value => !!value.propertyName)
+            .map(value =>
+                createVariableDeclarationStatement(
+                    createIdentifier(
+                        value.name.text,
+                        value.name,
+                        getIdentifierSymbolId(context, value.name),
+                    ),
+                    createIdentifier(value.propertyName?.text ?? 'nil'),
+                    value,
+                ),
+            );
     }
     const specifier = specifiers[0];
 
     return namedImports.elements
-        .filter(value => value.propertyName?.text.match(specifier.namePattern))
+        .filter(value =>
+            (value.propertyName ?? value.name).text.match(
+                specifier.namePattern,
+            ),
+        )
         .map(value =>
             createVariableDeclarationStatement(
                 createIdentifier(
