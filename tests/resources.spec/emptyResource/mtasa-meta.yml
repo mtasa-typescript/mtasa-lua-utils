@@ -1,0 +1,5 @@
+info:
+  type: script
+
+compilerConfig:
+  srcDir: tests/resources.spec/emptyResource

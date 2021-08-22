@@ -10,6 +10,7 @@ compilerConfig:
 
 scripts:
     - src: index.ts
+      #      bundled: true
       type: server
     - src: imported.ts
       type: server
@@ -20,20 +21,19 @@ files:
 minMtaVersion:
     client: '1.5.8'
     server: '1.5.8'
-#---
-#info:
-#    name: Resource2
-#    type: script
-#
-#compilerConfig:
-#    resourceDirectoryName: 'resource_2'
-#    srcDir: 'resource_example_2'
-#
+---
+info:
+    name: Resource2
+    type: script
+
+compilerConfig:
+    resourceDirectoryName: 'resource_2'
+    srcDir: 'resource_example_2'
+
 #scripts:
 #    - src: index.ts
 #      type: server
-#
-#minMtaVersion:
-#    client: '1.5.8'
-#    server: '1.5.8'
 
+minMtaVersion:
+    client: '1.5.8'
+    server: '1.5.8'

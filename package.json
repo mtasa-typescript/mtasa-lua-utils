@@ -31,7 +31,6 @@
         "tstl": "tstl"
     },
     "bin": {
-        "mtasa-utils-postbuild": "./utils/postbuild.js",
         "mtasa-ts-build": "./dist/mtasa-ts-build.js"
     },
     "files": [
@@ -40,11 +39,13 @@
         "src/compiler/empty.ts"
     ],
     "devDependencies": {
+        "@types/jest": "^27.0.1",
         "@types/js-yaml": "^4.0.2",
         "@types/node": "^16.6.0",
         "@typescript-eslint/eslint-plugin": "^4.29.1",
         "@typescript-eslint/parser": "^4.29.1",
         "eslint": "^7.32.0",
+        "jest": "^27.0.6",
         "json-schema-to-typescript": "^10.1.4",
         "mtasa-lua-types": "^0.6.3",
         "prettier": "^2.3.2",
