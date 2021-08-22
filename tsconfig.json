@@ -14,7 +14,13 @@
         "noImplicitReturns": true,
         "esModuleInterop": true,
         "newLine": "LF",
-        "stripInternal": true
+        "stripInternal": true,
+        "baseUrl": ".",
+        "types": [
+            "typescript-to-lua/language-extensions",
+            "@types/jest",
+            "@types/node"
+        ]
     },
     "tstl": {
         // MTASA Lua Language version is 5.1
@@ -28,5 +34,6 @@
         // Verbose output
         "tstlVerbose": true
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*"],
+    "exclude": ["src/tests/**/*"]
 }

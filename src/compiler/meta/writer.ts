@@ -125,7 +125,7 @@ function genSettingTag(setting: Readonly<Setting>): Element {
 function getMinMtaVersionTag(data: Readonly<MinMtaVersion>): Element {
     return {
         type: 'element',
-        name: 'setting',
+        name: 'min_mta_version',
         attributes: objectValuesToString(data),
     };
 }
@@ -133,7 +133,7 @@ function getMinMtaVersionTag(data: Readonly<MinMtaVersion>): Element {
 function genAclRequestTag(data: Readonly<AclRequest>): Element {
     return {
         type: 'element',
-        name: 'setting',
+        name: 'aclrequest',
         attributes: objectValuesToString(data),
     };
 }
