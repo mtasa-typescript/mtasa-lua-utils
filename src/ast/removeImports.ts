@@ -7,16 +7,15 @@ import {
 } from 'typescript-to-lua';
 import { getIdentifierSymbolId } from 'typescript-to-lua/dist/transformation/utils/symbols';
 
-
 const removeImportDeclarations: FunctionVisitor<ts.ImportDeclaration> =
     function (node, context) {
         const importClause = node.importClause;
         if (importClause?.namedBindings === undefined) {
-          return [];
+            return [];
         }
 
         if (importClause.namedBindings.kind !== ts.SyntaxKind.NamespaceImport) {
-          return context.superTransformStatements(node);
+            return context.superTransformStatements(node);
         }
 
         const namespaceImport = importClause.namedBindings;
