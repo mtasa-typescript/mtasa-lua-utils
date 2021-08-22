@@ -28,6 +28,7 @@
         "eslint": "eslint --max-warnings=0 .",
         "prettier-fix": "prettier --write .",
         "convert-schema": "node utils/convert-schema.js && prettier --write src/compiler/meta/types.ts",
+        "create-test": "node utils/create-test.js",
         "demo": "node dist/mtasa-ts-build.js",
         "tstl": "tstl"
     },
@@ -56,6 +57,7 @@
         "typescript": "^4.0.0"
     },
     "dependencies": {
+        "enquirer": "^2.3.6",
         "fast-glob": "^3.2.7",
         "glob-escape": "^0.0.2",
         "js-yaml": "^4.1.0",
