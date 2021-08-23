@@ -1,0 +1,22 @@
+info:
+    name: Resource0
+    type: script
+
+scripts:
+    - src: indexWithTypes.ts
+      type: shared
+
+compilerConfig:
+    srcDir: importTypesFromAnotherResource/Resource0
+
+---
+info:
+    name: Resource1
+    type: script
+
+scripts:
+    - src: index.ts
+      type: client
+
+compilerConfig:
+    srcDir: importTypesFromAnotherResource/Resource1

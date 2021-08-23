@@ -42,7 +42,7 @@ export function callCompilerWithCustomArgsBeforeAll(
                 callback();
             },
         );
-    }, 30000);
+    }, 60000);
 }
 
 export function stderrEmptyTest(context: CompilerProcessContext): void {

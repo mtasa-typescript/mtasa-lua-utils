@@ -1,0 +1,22 @@
+info:
+    name: Resource0
+    type: script
+
+scripts:
+    - src: indexWithExports.ts
+      type: shared
+
+compilerConfig:
+    srcDir: wrongImportVariableFromAnotherResource/Resource0
+
+---
+info:
+    name: Resource1
+    type: script
+
+scripts:
+    - src: index.ts
+      type: client
+
+compilerConfig:
+    srcDir: wrongImportVariableFromAnotherResource/Resource1

@@ -149,6 +149,7 @@ compilerConfig:
                         i,
                         data.containsLuaLib,
                         data.containsMeta,
+                        data.successful,
                     ),
                 );
 
@@ -174,6 +175,7 @@ compilerConfig:
                     undefined,
                     data.containsLuaLib,
                     data.containsMeta,
+                    data.successful,
                 ),
             );
         }
