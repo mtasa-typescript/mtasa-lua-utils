@@ -52,31 +52,40 @@ export function executeCompilerForAllResources(
     const configCheckDiagnositcs = validateOptions(options);
     showDiagnosticAndExit(configCheckDiagnositcs, reportDiagnostic);
 
+    const newOptions: CompilerOptions = {
+        ...options,
+        metaList: [...metaData],
+    };
+
     for (const resourceMeta of metaData) {
-        const data = getResourceData(options, resourceMeta);
+        const data = getResourceData(newOptions, resourceMeta);
         fs.mkdirSync(data.outDir, { recursive: true });
 
-        let partialDiagnostics = compileLuaLib(options, resourceMeta, data);
+        let partialDiagnostics = compileLuaLib(newOptions, resourceMeta, data);
         showDiagnosticAndExit(partialDiagnostics, reportDiagnostic);
 
-        partialDiagnostics = compileAttachedFiles(options, resourceMeta, data);
+        partialDiagnostics = compileAttachedFiles(
+            newOptions,
+            resourceMeta,
+            data,
+        );
         showDiagnosticAndExit(partialDiagnostics, reportDiagnostic);
 
         partialDiagnostics = compileResourceScripts(
-            options,
+            newOptions,
             resourceMeta,
             data,
         );
         showDiagnosticAndExit(partialDiagnostics, reportDiagnostic);
 
         partialDiagnostics = compileResourceBundledScripts(
-            options,
+            newOptions,
             resourceMeta,
             data,
         );
         showDiagnosticAndExit(partialDiagnostics, reportDiagnostic);
 
-        if (options.tstlVerbose) {
+        if (newOptions.tstlVerbose) {
             console.log(
                 `Generating meta.xml for "${data.verboseName}" resource`,
             );
@@ -149,6 +158,7 @@ export function compileLuaLib(
     const newOptions: CompilerOptions = {
         ...extendOptions(options, meta, data),
         rootDir: path.dirname(getEmptyTsFilePath()),
+        outDir: data.outDir,
         luaLibImport: LuaLibImportKind.Always,
     };
 
@@ -290,8 +300,21 @@ export function compileResourceScripts(
                 sourceFiles,
             ) {
                 if (sourceFiles !== undefined) {
-                    for (const file of sourceFiles) {
-                        emittedScripts.add(path.resolve(file.fileName));
+                    const anotherResource =
+                        sourceFiles.filter(
+                            file => !file.fileName.startsWith(data.rootDir),
+                        ).length !== 0;
+
+                    if (anotherResource) {
+                        console.log(
+                            `File ${fileName} is provided from an another resource.` +
+                                ` Skipping emit...`,
+                        );
+                        return;
+                    } else {
+                        for (const file of sourceFiles) {
+                            emittedScripts.add(path.resolve(file.fileName));
+                        }
                     }
                 }
 

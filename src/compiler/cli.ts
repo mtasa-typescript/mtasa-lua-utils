@@ -4,6 +4,8 @@ import { MTASAMeta } from './meta/types';
 
 export interface CompilerOptions extends tstl.CompilerOptions {
     meta?: string;
+    metaList?: MTASAMeta[];
+    originalRootDir?: string;
     resourceSpecific?: MTASAMeta;
 }
 

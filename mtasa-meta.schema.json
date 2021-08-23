@@ -49,10 +49,6 @@
                     "type": "string",
                     "description": "Directory with resource source files"
                 },
-                "resourceDirectoryName": {
-                    "type": "string",
-                    "description": "Output directory name"
-                },
                 "outMetaComments": {
                     "type": "boolean",
                     "description": "Show comments in the meta.xml file"

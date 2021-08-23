@@ -1,7 +1,7 @@
 import { FunctionVisitor } from 'typescript-to-lua/dist/transformation/context/visitors';
 import * as ts from 'typescript';
 import { transformExportDeclaration } from 'typescript-to-lua/dist/transformation/visitors/modules/export';
-import { prepareOneToManyVisitorResult } from './utils';
+import { getGlobalsTableName, prepareOneToManyVisitorResult } from './utils';
 import {
     AssignmentStatement,
     Identifier,
@@ -37,7 +37,7 @@ const removeExportDeclaration: FunctionVisitor<ts.ExportDeclaration> =
             if (tableIdentifier.text.indexOf('exports') === -1) {
                 continue;
             }
-            tableIdentifier.text = '_G';
+            tableIdentifier.text = getGlobalsTableName();
         }
 
         // result[0].

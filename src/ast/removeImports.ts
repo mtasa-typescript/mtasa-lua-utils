@@ -6,6 +6,7 @@ import {
     Plugin,
 } from 'typescript-to-lua';
 import { getIdentifierSymbolId } from 'typescript-to-lua/dist/transformation/utils/symbols';
+import { getGlobalsTableName } from './utils';
 
 const removeImportDeclarations: FunctionVisitor<ts.ImportDeclaration> =
     function (node, context) {
@@ -28,7 +29,7 @@ const removeImportDeclarations: FunctionVisitor<ts.ImportDeclaration> =
                     namespaceImport.name,
                     getIdentifierSymbolId(context, namespaceImport.name),
                 ),
-                createIdentifier('_G'),
+                createIdentifier(getGlobalsTableName()),
                 node,
             ),
         ];

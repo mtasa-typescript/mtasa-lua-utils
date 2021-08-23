@@ -46,11 +46,7 @@ export function getResourceVerboseName(
         return resourceMeta.info.name;
     }
 
-    if (resourceMeta.compilerConfig.resourceDirectoryName) {
-        return resourceMeta.compilerConfig.resourceDirectoryName;
-    }
-
-    return resourceMeta.compilerConfig.srcDir;
+    return path.basename(resourceMeta.compilerConfig.srcDir);
 }
 
 export function getResourceData(
@@ -68,8 +64,7 @@ export function getResourceData(
         outDir: normalizeSlashes(
             path.join(
                 options.outDir ?? '.',
-                resourceMeta.compilerConfig.resourceDirectoryName ??
-                    resourceMeta.compilerConfig.srcDir,
+                resourceMeta.compilerConfig.srcDir,
             ),
         ),
     };
@@ -112,8 +107,9 @@ export function extendOptions(
         resourceSpecific: {
             ...meta,
         },
-        rootDir: data.rootDir,
-        outDir: data.outDir,
+        originalRootDir: options.rootDir,
+        rootDir: path.dirname(data.rootDir),
+        outDir: path.dirname(data.outDir),
     };
 }
 

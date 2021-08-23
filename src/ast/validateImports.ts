@@ -5,28 +5,7 @@ import { CompilerOptions } from '../compiler/cli';
 import * as path from 'path';
 import { Script } from '../compiler/meta/types';
 import { simpleTsDiagnostic } from '../compiler/utils';
-
-export function isRelativeImport(moduleName: string): boolean {
-    return moduleName.startsWith('../') || moduleName.startsWith('./');
-}
-
-export function getFileSide(
-    filepath: string,
-    context: TransformationContext,
-): Script['type'] | undefined {
-    const options = context.options as CompilerOptions;
-    const rootDir = options.rootDir as string;
-
-    const scripts = options.resourceSpecific?.scripts?.filter(
-        script => path.join(rootDir, script.src) === path.join(filepath),
-    );
-
-    if (scripts === undefined || scripts.length === 0) {
-        return undefined;
-    }
-
-    return scripts[0].type;
-}
+import { getFileSide, isRelativeImport } from './utils';
 
 const checkImportsSide: FunctionVisitor<ts.ImportDeclaration> = function (
     node,
@@ -42,6 +21,9 @@ const checkImportsSide: FunctionVisitor<ts.ImportDeclaration> = function (
 
     const currentFileType = getFileSide(context.sourceFile.fileName, context);
     if (!currentFileType) {
+        console.log(
+            `Unable to determine file side: ${context.sourceFile.fileName}`,
+        );
         return context.superTransformStatements(node);
     }
 
