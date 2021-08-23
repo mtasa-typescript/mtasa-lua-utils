@@ -13,6 +13,9 @@ const plugins: LuaPluginImport[] = [
         name: getPluginPath('prepareImports.js'),
     },
     {
+        name: getPluginPath('validateImports.js'),
+    },
+    {
         name: getPluginPath('removeExportAssignment.js'),
     },
     {

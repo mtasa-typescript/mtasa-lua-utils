@@ -9,7 +9,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 describe('Case "importPlugin", Resource2', () => {
-    const targetPath = 'dist/tests/resources.spec/importPlugin/Resource2';
+    const targetPath = 'src/tests/dist/importPlugin/Resource2';
 
     const context: CompilerProcessContext = {
         processOut: '',
@@ -19,6 +19,7 @@ describe('Case "importPlugin", Resource2', () => {
     callCompilerWithMetaPathBeforeAll(
         'src/tests/resources.spec/importPlugin/mtasa-meta.yml',
         context,
+        false,
     );
 
     stderrEmptyTest(context);

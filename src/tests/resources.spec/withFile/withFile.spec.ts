@@ -8,8 +8,8 @@ import {
 import * as path from 'path';
 import * as fs from 'fs';
 
-describe('Case "simpleResource"', () => {
-    const targetPath = 'src/tests/dist/simpleResource';
+describe('Case "withFile"', () => {
+    const targetPath = 'src/tests/dist/withFile';
 
     const context: CompilerProcessContext = {
         processOut: '',
@@ -17,7 +17,7 @@ describe('Case "simpleResource"', () => {
     };
 
     callCompilerWithMetaPathBeforeAll(
-        'src/tests/resources.spec/simpleResource/mtasa-meta.yml',
+        'src/tests/resources.spec/withFile/mtasa-meta.yml',
         context,
         false,
     );
@@ -25,17 +25,19 @@ describe('Case "simpleResource"', () => {
     stderrEmptyTest(context);
 
     targetFileCheckTest(targetPath, true);
-    targetFileCheckTest(path.join(targetPath, 'lualib_bundle.lua'), true);
+    targetFileCheckTest(path.join(targetPath, 'lualib_bundle.lua'), false);
     targetFileCheckTest(path.join(targetPath, 'meta.xml'), true);
+    targetFileCheckTest(path.join(targetPath, 'files/image.png'), true);
+    targetFileCheckTest(path.join(targetPath, 'files/not-tracked.png'), false);
 
-    //    targetDirectoryFilesLengthTest(targetPath, 1);
+    targetDirectoryFilesLengthTest(targetPath, 2);
 
     test('The target file "meta.xml" does not contain unexpected tags', () => {
         const content = fs.readFileSync(
             path.join(targetPath, 'meta.xml'),
             'utf8',
         );
-        //        expect(content).not.toContain('<script');
+        expect(content).not.toContain('<script');
     });
 
     test('The target file "meta.xml" contains expected tags', () => {
@@ -44,5 +46,6 @@ describe('Case "simpleResource"', () => {
             'utf8',
         );
         expect(content).toContain('<oop');
+        expect(content).toContain('<file');
     });
 });

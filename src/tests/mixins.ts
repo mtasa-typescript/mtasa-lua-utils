@@ -12,7 +12,7 @@ export function callCompilerWithMetaPathBeforeAll(
     expectedError = false,
 ): void {
     return callCompilerWithCustomArgsBeforeAll(
-        ['--meta', `"${filepath}"`],
+        ['--meta', `"${filepath}"`, '--project', 'src/tests/tsconfig.json'],
         context,
         expectedError,
     );
@@ -25,7 +25,7 @@ export function callCompilerWithCustomArgsBeforeAll(
 ): void {
     return beforeAll(callback => {
         child_process.exec(
-            `node dist/mtasa-ts-build.js ${args.join(' ')}`,
+            `node dist/mtasa-ts-build.js ${args.join(' ')} `,
             function (error, stdout, stderr) {
                 if (!!error !== expectedError) {
                     console.log('stdout:', stdout);
@@ -49,6 +49,17 @@ export function stderrEmptyTest(context: CompilerProcessContext): void {
     return test('STDERR empty', () => {
         expect(context.processErr).toHaveLength(0);
     });
+}
+
+export function stdoutContainsMessages(
+    context: CompilerProcessContext,
+    messages: string[],
+): void {
+    for (const message of messages) {
+        test(`STDOUT contains message "${message}"`, () => {
+            expect(context.processOut).toContain(message);
+        });
+    }
 }
 
 export function targetFileCheckTest(filepath: string, isExists: boolean): void {

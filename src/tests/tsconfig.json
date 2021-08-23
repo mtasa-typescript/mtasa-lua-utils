@@ -4,7 +4,7 @@
         "target": "ES6",
         "lib": ["es6"],
         "module": "CommonJS",
-        "rootDir": "src",
+        "rootDir": "resources.spec",
         "outDir": "dist",
         "strict": true,
         "sourceMap": true,
@@ -15,7 +15,12 @@
         "esModuleInterop": true,
         "newLine": "LF",
         "stripInternal": true,
-        "baseUrl": "."
+        "baseUrl": ".",
+        "types": [
+            "typescript-to-lua/language-extensions",
+            "@types/jest",
+            "@types/node"
+        ]
     },
     "tstl": {
         // MTASA Lua Language version is 5.1

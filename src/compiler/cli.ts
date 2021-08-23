@@ -4,7 +4,7 @@ import { MTASAMeta } from './meta/types';
 
 export interface CompilerOptions extends tstl.CompilerOptions {
     meta?: string;
-    resourceSpecific?: MTASAMeta['compilerConfig'];
+    resourceSpecific?: MTASAMeta;
 }
 
 export interface ParsedCommandLine extends tstl.ParsedCommandLine {

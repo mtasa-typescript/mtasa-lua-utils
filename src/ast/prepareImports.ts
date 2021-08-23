@@ -1,11 +1,14 @@
 import { FunctionVisitor } from 'typescript-to-lua/dist/transformation/context/visitors';
 import * as ts from 'typescript';
+import { DiagnosticCategory } from 'typescript';
 import {
     createIdentifier,
     createVariableDeclarationStatement,
     Plugin,
+    TransformationContext,
 } from 'typescript-to-lua';
 import { getIdentifierSymbolId } from 'typescript-to-lua/dist/transformation/utils/symbols';
+import { simpleTsDiagnostic } from '../compiler/utils';
 
 interface ImportSpecifierToGlobalTable {
     namePattern: RegExp;
@@ -19,6 +22,18 @@ const importSpecifiersMapToGlobalTable: ImportSpecifierToGlobalTable[] = [
         modulePattern: /^mtasa-lua-types\/types\/mtasa\/(client|server)$/,
     },
 ];
+
+function checkImportSide(
+    node: ts.ImportDeclaration,
+    context: TransformationContext,
+) {
+    // context.diagnostics.push(
+    //     simpleTsDiagnostic(
+    //         `Do not use export assignments (file: ${context.sourceFile.fileName})`,
+    //         DiagnosticCategory.Warning,
+    //     ),
+    // );
+}
 
 const prepareGlobalImports: FunctionVisitor<ts.ImportDeclaration> = function (
     node,

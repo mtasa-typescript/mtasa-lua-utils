@@ -7,7 +7,7 @@ minMtaVersion:
     server: 1.5.8
 
 compilerConfig:
-    srcDir: tests\resources.spec\multipleSimpleResources/Resource0
+    srcDir: multipleSimpleResources/Resource0
 
 ---
 info:
@@ -24,7 +24,7 @@ scripts:
       cache: false
 
 compilerConfig:
-    srcDir: tests\resources.spec\multipleSimpleResources/Resource1
+    srcDir: multipleSimpleResources/Resource1
 
 ---
 info:
@@ -37,4 +37,4 @@ files:
       download: true
 
 compilerConfig:
-    srcDir: tests\resources.spec\multipleSimpleResources/Resource2
+    srcDir: multipleSimpleResources/Resource2

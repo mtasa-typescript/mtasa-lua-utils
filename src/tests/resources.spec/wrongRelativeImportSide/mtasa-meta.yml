@@ -1,0 +1,11 @@
+info:
+    type: script
+
+scripts:
+    - src: imported.ts
+      type: server
+    - src: index.ts
+      type: client
+
+compilerConfig:
+    srcDir: wrongRelativeImportSide

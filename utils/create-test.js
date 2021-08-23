@@ -44,11 +44,19 @@ function promptTestData() {
             disabled: 'No',
             initial: 1,
         },
+        {
+            type: 'toggle',
+            name: 'successful',
+            message: 'Does the compiler exit successfully?',
+            enabled: 'Yes',
+            disabled: 'No',
+            initial: 1,
+        },
     ]);
 }
 
-function getSpecContent(name, innerId, lualib, meta) {
-    const targetDirectory = `dist/tests/resources.spec/${name}${
+function getSpecContent(name, innerId, lualib, meta, successful) {
+    const targetDirectory = `src/tests/dist/${name}${
         innerId === undefined ? '' : '/Resource' + innerId
     }`;
     const srcDirectory = `src/tests/resources.spec/${name}`;
@@ -57,6 +65,7 @@ function getSpecContent(name, innerId, lualib, meta) {
     callCompilerWithMetaPathBeforeAll,
     CompilerProcessContext,
     stderrEmptyTest,
+    stdoutContainsMessages,
     targetDirectoryFilesLengthTest,
     targetFileCheckTest,
 } from '${innerId === undefined ? '' : '../'}../../mixins';
@@ -76,9 +85,14 @@ describe('Case "${name}"${
     callCompilerWithMetaPathBeforeAll(
         '${srcDirectory}/mtasa-meta.yml',
         context,
+        ${!successful}
     );
 
-    stderrEmptyTest(context);
+    ${
+        successful
+            ? 'stderrEmptyTest(context);'
+            : 'stdoutContainsMessages(context, [\n\n    ]);'
+    }
 
     targetFileCheckTest(targetPath, true);
     targetFileCheckTest(path.join(targetPath, 'lualib_bundle.lua'), ${!!lualib});
@@ -107,20 +121,24 @@ describe('Case "${name}"${
 
 promptTestData()
     .then(data => {
-        const rootPath = 'tests/resources.spec';
-        const directory = path.join(rootPath, data.directory);
+        const rootPath = 'src/tests/resources.spec';
+        const srcPath = '';
+
+        const rootDirectory = path.join(rootPath, data.directory);
+        const srcDirectory = path.join(srcPath, data.directory);
+
         const resourceAmount = data.resourceAmount;
-        fs.mkdirSync(directory, { recursive: true });
+        fs.mkdirSync(rootDirectory, { recursive: true });
         let mtasaMetaYml = `info:
     type: script
 
 compilerConfig:
-    srcDir: ${directory}
+    srcDir: ${srcDirectory}
 `;
 
         if (resourceAmount > 1) {
             for (let i = 0; i < resourceAmount; ++i) {
-                const localDirectory = path.join(directory, `Resource${i}`);
+                const localDirectory = path.join(rootDirectory, `Resource${i}`);
                 fs.mkdirSync(localDirectory, {
                     recursive: true,
                 });
@@ -145,12 +163,12 @@ compilerConfig:
     type: script
 
 compilerConfig:
-    srcDir: ${directory}/Resource${i}
+    srcDir: ${srcDirectory}/Resource${i}
 `;
             }
         } else {
             fs.writeFileSync(
-                path.join(directory, `${data.directory}.spec.ts`),
+                path.join(rootDirectory, `${data.directory}.spec.ts`),
                 getSpecContent(
                     data.directory,
                     undefined,
@@ -161,7 +179,7 @@ compilerConfig:
         }
 
         fs.writeFileSync(
-            path.join(directory, 'mtasa-meta.yml'),
+            path.join(rootDirectory, 'mtasa-meta.yml'),
             mtasaMetaYml,
             'utf8',
         );

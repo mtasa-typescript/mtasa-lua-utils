@@ -4,9 +4,10 @@ import {
     stdoutContainsMessages,
     targetFileCheckTest,
 } from '../../mixins';
+import * as path from 'path';
 
-describe('Case "exportAssignment", Resource3', () => {
-    const targetPath = 'src/tests/dist/exportAssignment';
+describe('Case "notExistingScriptInMeta"', () => {
+    const targetPath = 'src/tests/dist/notExistingScriptInMeta';
 
     const context: CompilerProcessContext = {
         processOut: '',
@@ -14,15 +15,13 @@ describe('Case "exportAssignment", Resource3', () => {
     };
 
     callCompilerWithMetaPathBeforeAll(
-        'src/tests/resources.spec/exportAssignment/mtasa-meta.yml',
+        'src/tests/resources.spec/notExistingScriptInMeta/mtasa-meta.yml',
         context,
         true,
     );
 
-    stdoutContainsMessages(context, [
-        'warning',
-        'Do not use export assignments',
-    ]);
+    stdoutContainsMessages(context, ['error', 'not found']);
 
     targetFileCheckTest(targetPath, true);
+    targetFileCheckTest(path.join(targetPath, 'meta.xml'), false);
 });

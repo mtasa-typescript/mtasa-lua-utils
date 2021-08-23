@@ -9,7 +9,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 describe('Case "emptyResource"', () => {
-    const targetPath = 'dist/tests/resources.spec/emptyResource';
+    const targetPath = 'src/tests/dist/emptyResource';
 
     const context: CompilerProcessContext = {
         processOut: '',
@@ -19,6 +19,7 @@ describe('Case "emptyResource"', () => {
     callCompilerWithMetaPathBeforeAll(
         'src/tests/resources.spec/emptyResource/mtasa-meta.yml',
         context,
+        false,
     );
 
     stderrEmptyTest(context);

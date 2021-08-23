@@ -2,3 +2,5 @@ package-lock.json
 **/*.md
 LICENSE
 transformer/**
+dist/**
+src/tests/dist/**

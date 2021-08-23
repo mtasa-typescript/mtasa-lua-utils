@@ -3,7 +3,7 @@ info:
     type: script
 
 compilerConfig:
-    srcDir: tests\resources.spec\importPlugin/Resource0
+    srcDir: importPlugin/Resource0
 
 scripts:
     - src: imported.ts
@@ -19,7 +19,7 @@ info:
     type: script
 
 compilerConfig:
-    srcDir: tests\resources.spec\importPlugin/Resource1
+    srcDir: importPlugin/Resource1
 
 scripts:
     - src: imported.ts
@@ -35,7 +35,7 @@ info:
     type: script
 
 compilerConfig:
-    srcDir: tests\resources.spec\importPlugin/Resource2
+    srcDir: importPlugin/Resource2
 
 scripts:
     - src: imported.ts

@@ -9,8 +9,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 describe('Case "multipleSimpleResources", Resource1', () => {
-    const targetPath =
-        'dist/tests/resources.spec/multipleSimpleResources/Resource1';
+    const targetPath = 'src/tests/dist/multipleSimpleResources/Resource1';
 
     const context: CompilerProcessContext = {
         processOut: '',
@@ -20,6 +19,7 @@ describe('Case "multipleSimpleResources", Resource1', () => {
     callCompilerWithMetaPathBeforeAll(
         'src/tests/resources.spec/multipleSimpleResources/mtasa-meta.yml',
         context,
+        false,
     );
 
     stderrEmptyTest(context);

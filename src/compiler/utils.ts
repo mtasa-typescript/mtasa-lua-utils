@@ -81,7 +81,7 @@ export function simpleTsDiagnostic(
 ): Diagnostic {
     return {
         messageText: message,
-        code: 1,
+        code: 10000, // TODO: change code
         category: category,
         file: undefined,
         length: undefined,
@@ -110,7 +110,7 @@ export function extendOptions(
     return {
         ...options,
         resourceSpecific: {
-            ...meta.compilerConfig,
+            ...meta,
         },
         rootDir: data.rootDir,
         outDir: data.outDir,
