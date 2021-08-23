@@ -26,14 +26,5 @@ describe('Case "wrongImportVariableFromAnotherResource", Resource1', () => {
 
     targetFileCheckTest(targetPath, true);
     targetFileCheckTest(path.join(targetPath, 'lualib_bundle.lua'), true);
-    targetFileCheckTest(path.join(targetPath, 'meta.xml'), true);
-
-    test('The target file "meta.xml" contains expected tags', () => {
-        const content = fs.readFileSync(
-            path.join(targetPath, 'meta.xml'),
-            'utf8',
-        );
-        expect(content).toContain('<oop');
-        expect(content).toContain('<script');
-    });
+    targetFileCheckTest(path.join(targetPath, 'meta.xml'), false);
 });
