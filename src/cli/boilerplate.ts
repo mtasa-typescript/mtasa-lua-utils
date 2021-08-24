@@ -101,8 +101,7 @@ function downloadBoilerplate(directory: string): Promise<void> {
         });
 }
 
-async function boilerplateEntrypoint() {
-    // request('http://example.com/foo.gz').pipe(zlib.createUnzip()).pipe(out);
+export async function boilerplateEntrypoint(): Promise<void> {
     const directory = path.resolve('.');
     await promptData(
         {
@@ -114,7 +113,3 @@ async function boilerplateEntrypoint() {
 
     await downloadBoilerplate(directory);
 }
-
-boilerplateEntrypoint()
-    .then(r => console.log('MTASA Boilerplate has been set up successfully'))
-    .catch();

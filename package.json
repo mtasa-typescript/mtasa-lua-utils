@@ -1,6 +1,6 @@
 {
     "name": "mtasa-lua-utils",
-    "version": "1.0.0-beta.0",
+    "version": "1.0.0-beta.3",
     "description": "Prepares Typescript files for Lua compilation for MTASA",
     "author": "Anatolii Titov <a@toliak.ru>",
     "keywords": [
@@ -32,7 +32,7 @@
         "tstl": "tstl"
     },
     "bin": {
-        "mtasa-ts-build": "./dist/mtasa-ts-build.js"
+        "mtasa-lua-utils": "./dist/cli.js"
     },
     "files": [
         "dist/**/*",
