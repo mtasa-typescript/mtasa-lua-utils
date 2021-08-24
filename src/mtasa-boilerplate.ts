@@ -37,20 +37,20 @@ function promptData(
     return Enquirer.prompt([
         ...(warning
             ? [
-                {
-                    type: 'toggle',
-                    name: 'continue',
-                    message: warning + '\nAre you sure you want to continue?',
-                    initial: false,
-                    result(result: string): string | Promise<string> {
-                        if (!result) {
-                            console.log('Exiting...');
-                            ts.sys.exit(1);
-                        }
-                        return result;
-                    },
-                },
-            ]
+                  {
+                      type: 'toggle',
+                      name: 'continue',
+                      message: warning + '\nAre you sure you want to continue?',
+                      initial: false,
+                      result(result: string): string | Promise<string> {
+                          if (!result) {
+                              console.log('Exiting...');
+                              ts.sys.exit(1);
+                          }
+                          return result;
+                      },
+                  },
+              ]
             : []),
     ]);
 }
@@ -60,7 +60,7 @@ const BOILERPLATE_URL =
 
 function downloadBoilerplate(directory: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-        const request = https.get(BOILERPLATE_URL, {}, function(response) {
+        const request = https.get(BOILERPLATE_URL, {}, function (response) {
             const unzipPipe = response.pipe(unzip.Extract({ path: './' }));
             unzipPipe.on('error', err => {
                 console.error('Error happen while unzipping');
@@ -82,7 +82,7 @@ function downloadBoilerplate(directory: string): Promise<void> {
                 path.join(directory, 'resource-boilerplate-master'),
                 directory,
                 { mkdirp: false, clobber: false },
-                function(err) {
+                function (err) {
                     if (err === null) {
                         return;
                     }
