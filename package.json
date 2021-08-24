@@ -1,6 +1,6 @@
 {
     "name": "mtasa-lua-utils",
-    "version": "0.2.3",
+    "version": "1.0.0-beta.0",
     "description": "Prepares Typescript files for Lua compilation for MTASA",
     "author": "Anatolii Titov <a@toliak.ru>",
     "keywords": [
@@ -42,7 +42,9 @@
     "devDependencies": {
         "@types/jest": "^27.0.1",
         "@types/js-yaml": "^4.0.2",
+        "@types/mv": "^2.1.2",
         "@types/node": "^16.6.0",
+        "@types/unzipper": "^0.10.4",
         "@typescript-eslint/eslint-plugin": "^4.29.1",
         "@typescript-eslint/parser": "^4.29.1",
         "eslint": "^7.32.0",
@@ -62,7 +64,9 @@
         "js-yaml": "^4.1.0",
         "json5": "^2.2.0",
         "jsonschema": "^1.4.0",
+        "mv": "^2.1.1",
         "typescript-to-lua": "^0.42.0",
+        "unzipper": "^0.10.11",
         "xml-js": "^1.6.11"
     }
 }
