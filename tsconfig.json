@@ -13,6 +13,7 @@
         "noImplicitThis": true,
         "noImplicitReturns": true,
         "esModuleInterop": true,
+        "resolveJsonModule": true,
         "newLine": "LF",
         "stripInternal": true,
         "baseUrl": "."

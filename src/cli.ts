@@ -3,26 +3,54 @@
 import ts from 'typescript';
 import { boilerplateEntrypoint } from './cli/boilerplate';
 import { buildProject } from './cli/build';
+import { getVersion } from './cli/information';
+
+const HELP_MESSAGE =
+    `mtasa-lua-utils version: ${getVersion()}\n` +
+    '\x1b[0m\n' +
+    'Usage: \x1b[35mmtasa-lua-utils \x1b[1m<command>\x1b[0m\n' +
+    '\x1b[0m\n' +
+    'Available commands:' +
+    '\x1b[0m\n' +
+    '    \x1b[34mboilerplate   \x1b[0mInitialize MTASA TypeScript Boilerplate' +
+    '\x1b[0m\n' +
+    '    \x1b[34mbuild         \x1b[0mBuild TypeScript Resource' +
+    '\x1b[0m\n' +
+    '\x1b[0m\n' +
+    'Example command, to get help about specified util:\n' +
+    '\x1b[35mmtasa-lua-utils \x1b[1mbuild \x1b[34m--help\x1b[0m';
 
 const ERROR_MESSAGE =
-    'Expected usage: mtasa-lua-utils [command]\n' +
-    '    Available commands: boilerplate, build';
+    'Unexpected argument. Use command below to get information:\n' +
+    '\x1b[34mmtasa-lua-utils --help\x1b[0m';
 
 function parseAndExecuteArguments(): void {
-    if (ts.sys.args.length !== 2) {
+    if (ts.sys.args.length === 0) {
         console.error(ERROR_MESSAGE);
         ts.sys.exit(1);
     }
-    if (ts.sys.args[1] === 'boilerplate') {
-        boilerplateEntrypoint()
+    if (ts.sys.args[0] === 'boilerplate') {
+        boilerplateEntrypoint(ts.sys.args.slice(1))
             .then(() =>
-                console.log('MTASA Boilerplate has been set up successfully'),
+                console.log(
+                    '\x1b[32mMTASA Boilerplate has been set up successfully\x1b[0m',
+                ),
             )
-            .catch();
+            .catch(err => {
+                console.error(err);
+            });
         return;
     }
-    if (ts.sys.args[1] === 'build') {
-        buildProject();
+    if (ts.sys.args[0] === 'build') {
+        buildProject(ts.sys.args.slice(1));
+        return;
+    }
+    if (
+        ts.sys.args[0] === '--help' ||
+        ts.sys.args[0] === '?' ||
+        ts.sys.args[0] === '-h'
+    ) {
+        console.error(HELP_MESSAGE);
         return;
     }
 

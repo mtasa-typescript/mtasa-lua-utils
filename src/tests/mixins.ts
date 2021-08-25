@@ -12,7 +12,13 @@ export function callCompilerWithMetaPathBeforeAll(
     expectedError = false,
 ): void {
     return callCompilerWithCustomArgsBeforeAll(
-        ['--meta', `"${filepath}"`, '--project', 'src/tests/tsconfig.json'],
+        [
+            'build',
+            '--meta',
+            `"${filepath}"`,
+            '--project',
+            'src/tests/tsconfig.json',
+        ],
         context,
         expectedError,
     );
@@ -25,7 +31,7 @@ export function callCompilerWithCustomArgsBeforeAll(
 ): void {
     return beforeAll(callback => {
         child_process.exec(
-            `node dist/mtasa-ts-build.js ${args.join(' ')} `,
+            `node dist/cli.js ${args.join(' ')} `,
             function (error, stdout, stderr) {
                 if (!!error !== expectedError) {
                     console.log('stdout:', stdout);
