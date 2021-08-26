@@ -59,13 +59,11 @@
     },
     "dependencies": {
         "enquirer": "^2.3.6",
-        "fast-glob": "^3.2.7",
-        "glob-escape": "^0.0.2",
         "js-yaml": "^4.1.0",
         "json5": "^2.2.0",
         "jsonschema": "^1.4.0",
         "mv": "^2.1.1",
-        "typescript-to-lua": "^0.42.0",
+        "typescript-to-lua": "^1.0.0",
         "unzipper": "^0.10.11",
         "xml-js": "^1.6.11"
     }
