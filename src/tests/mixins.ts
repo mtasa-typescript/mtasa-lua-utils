@@ -7,31 +7,43 @@ export interface CompilerProcessContext {
     processErr: string;
 }
 
+export interface CliCustomOptions {
+    executable?: string;
+    stdinContent?: string[];
+    cwd?: string;
+}
+
 export function callCompilerWithMetaPathBeforeAll(
     filepath: string,
     context: CompilerProcessContext,
     expectedError = false,
-    stdinContent: readonly string[] = [],
+    options: Readonly<CliCustomOptions> = {},
 ): void {
-    return callCompilerWithCustomArgsBeforeAll(
+    return callCliWithCustomArgsBeforeAll(
         ['build', '--meta', filepath, '--project', 'src/tests/tsconfig.json'],
         context,
         expectedError,
+        options,
     );
 }
 
-export function callCompilerWithCustomArgsBeforeAll(
+export function callCliWithCustomArgsBeforeAll(
     args: string[],
     context: CompilerProcessContext,
     expectedError = false,
-    stdinContent: readonly string[] = [],
+    options: Readonly<CliCustomOptions> = {},
 ): void {
     return beforeAll(callback => {
         // See
         // https://github.com/ewnd9/inquirer-test/blob/master/index.js
-        const proc = child_process.spawn('node', ['dist/cli.js', ...args], {
-            stdio: [null, null, null],
-        });
+        const proc = child_process.spawn(
+            'node',
+            [options.executable ?? 'dist/cli.js', ...args],
+            {
+                stdio: [null, null, null],
+                cwd: options.cwd,
+            },
+        );
         proc.stdin.setDefaultEncoding('utf8');
 
         const loop = function (content: readonly string[]) {
@@ -45,7 +57,7 @@ export function callCompilerWithCustomArgsBeforeAll(
             }
         };
 
-        loop(stdinContent);
+        loop(options.stdinContent ?? []);
 
         proc.stdout.pipe(
             concatStream(function (result) {

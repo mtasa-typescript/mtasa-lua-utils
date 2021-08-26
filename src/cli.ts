@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 import ts from 'typescript';
-import { boilerplateEntrypoint } from './cli/boilerplate';
+import { newProjectEntrypoint } from './cli/newProject';
 import { buildProject } from './cli/build';
 import { getVersion } from './cli/information';
+import { newResourceEntrypoint } from './cli/newResource';
 
 const HELP_MESSAGE =
     `mtasa-lua-utils version: ${getVersion()}\n` +
@@ -29,11 +30,23 @@ function parseAndExecuteArguments(): void {
         console.error(ERROR_MESSAGE);
         ts.sys.exit(1);
     }
-    if (ts.sys.args[0] === 'boilerplate') {
-        boilerplateEntrypoint(ts.sys.args.slice(1))
+    if (ts.sys.args[0] === 'new-project') {
+        newProjectEntrypoint(ts.sys.args.slice(1))
             .then(() =>
                 console.log(
-                    '\x1b[32mMTASA Boilerplate has been set up successfully\x1b[0m',
+                    '\x1b[32mMTASA TypeScript project has been set up successfully\x1b[0m',
+                ),
+            )
+            .catch(err => {
+                console.error(err);
+            });
+        return;
+    }
+    if (ts.sys.args[0] === 'new-resource') {
+        newResourceEntrypoint(ts.sys.args.slice(1))
+            .then(() =>
+                console.log(
+                    '\x1b[32mNew TypeScript resource has been set up successfully\x1b[0m',
                 ),
             )
             .catch(err => {
