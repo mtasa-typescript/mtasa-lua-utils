@@ -224,7 +224,7 @@ function prepareEnvironment(
     };
 }
 
-export async function boilerplateEntrypoint(args: string[]): Promise<void> {
+export async function newProjectEntrypoint(args: string[]): Promise<void> {
     const options = parseOptions(args);
     if (options.help) {
         printHelp();
