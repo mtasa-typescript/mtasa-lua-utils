@@ -1,4 +1,5 @@
 import * as child_process from 'child_process';
+import concatStream from 'concat-stream';
 import * as fs from 'fs';
 
 export interface CompilerProcessContext {
@@ -10,15 +11,10 @@ export function callCompilerWithMetaPathBeforeAll(
     filepath: string,
     context: CompilerProcessContext,
     expectedError = false,
+    stdinContent: readonly string[] = [],
 ): void {
     return callCompilerWithCustomArgsBeforeAll(
-        [
-            'build',
-            '--meta',
-            `"${filepath}"`,
-            '--project',
-            'src/tests/tsconfig.json',
-        ],
+        ['build', '--meta', filepath, '--project', 'src/tests/tsconfig.json'],
         context,
         expectedError,
     );
@@ -28,26 +24,64 @@ export function callCompilerWithCustomArgsBeforeAll(
     args: string[],
     context: CompilerProcessContext,
     expectedError = false,
+    stdinContent: readonly string[] = [],
 ): void {
     return beforeAll(callback => {
-        child_process.exec(
-            `node dist/cli.js ${args.join(' ')} `,
-            function (error, stdout, stderr) {
-                if (!!error !== expectedError) {
-                    console.log('stdout:', stdout);
-                    console.error('stderr:', stderr);
+        // See
+        // https://github.com/ewnd9/inquirer-test/blob/master/index.js
+        const proc = child_process.spawn('node', ['dist/cli.js', ...args], {
+            stdio: [null, null, null],
+        });
+        proc.stdin.setDefaultEncoding('utf8');
+
+        const loop = function (content: readonly string[]) {
+            if (content.length > 0) {
+                setTimeout(function () {
+                    proc.stdin.write(content[0]);
+                    loop(content.slice(1));
+                }, 200);
+            } else {
+                proc.stdin.end();
+            }
+        };
+
+        loop(stdinContent);
+
+        proc.stdout.pipe(
+            concatStream(function (result) {
+                context.processOut = result.toString();
+            }),
+        );
+        proc.stderr.pipe(
+            concatStream(function (result) {
+                context.processErr = result.toString();
+            }),
+        );
+
+        proc.on('exit', function (exitCode) {
+            console.log('stdout:', context.processOut);
+            console.error('stderr:', context.processErr);
+
+            if (exitCode === 0) {
+                if (expectedError) {
                     callback(
-                        error ??
-                            'Expected an error, got successfully completed process',
+                        'Expected an error, got successfully completed process',
                     );
                     return;
                 }
 
-                context.processOut = stdout;
-                context.processErr = stderr;
                 callback();
-            },
-        );
+                return;
+            }
+
+            if (expectedError) {
+                callback();
+                return;
+            }
+
+            // Error, not nxpected
+            callback(`Unexpected error: ${exitCode}`);
+        });
     }, 60000);
 }
 
