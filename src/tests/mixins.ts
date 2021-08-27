@@ -34,6 +34,10 @@ export function callCliWithCustomArgsBeforeAll(
     options: Readonly<CliCustomOptions> = {},
 ): void {
     return beforeAll(callback => {
+        if (options.cwd) {
+            fs.mkdirSync(options.cwd, { recursive: true });
+        }
+
         // See
         // https://github.com/ewnd9/inquirer-test/blob/master/index.js
         const proc = child_process.spawn(
@@ -49,6 +53,10 @@ export function callCliWithCustomArgsBeforeAll(
         const loop = function (content: readonly string[]) {
             if (content.length > 0) {
                 setTimeout(function () {
+                    if (proc.stdin.destroyed) {
+                        return;
+                    }
+
                     proc.stdin.write(content[0]);
                     loop(content.slice(1));
                 }, 200);
@@ -94,7 +102,10 @@ export function callCliWithCustomArgsBeforeAll(
             }
 
             // Error, not expected
-            callback(`Unexpected error: ${exitCode}`);
+            callback(
+                `Unexpected error: ${exitCode}\n` +
+                    `Stderr content: ${context.processErr}`,
+            );
         });
     }, 60000);
 }

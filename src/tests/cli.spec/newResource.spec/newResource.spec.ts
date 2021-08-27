@@ -27,7 +27,6 @@ describe('New Resource CLI command', () => {
                 'NewResource',
                 CLI_ENQUIRER_KEY.ENTER,
                 CLI_ENQUIRER_KEY.ENTER,
-                CLI_ENQUIRER_KEY.ENTER,
             ],
             cwd: 'src/tests/dist',
         },

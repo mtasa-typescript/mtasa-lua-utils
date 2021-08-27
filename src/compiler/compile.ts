@@ -128,7 +128,7 @@ export function compileAttachedFiles(
         try {
             fs.mkdirSync(dirname, { recursive: true });
             fs.copyFileSync(rootSrc, outSrc);
-        } catch (e) {
+        } catch (e: any) {
             diagnosticResults.push(
                 simpleTsDiagnostic(e.toString(), DiagnosticCategory.Error),
             );

@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import * as unzip from 'unzipper';
 import * as https from 'https';
 import * as path from 'path';
-import mv from 'mv';
 import ts from 'typescript';
 
 export interface ParsedOptions {
@@ -65,7 +64,7 @@ function printHelp() {
 }
 
 function validateDirectory(directory: string): boolean {
-    return fs.readdirSync(directory).length === 0;
+    return !fs.existsSync(directory);
 }
 
 export interface PromptOptions {
@@ -84,7 +83,7 @@ function promptAfterValidation(
     if (options.warnDirectoryIsNotEmpty) {
         warning +=
             'Execute this script inside an empty directory.\n' +
-            `  Directory \x1b[34m${directory}\x1b[0m \x1b[1mexpected to be empty\x1b[0m.\n`;
+            `  Directory \x1b[34m${directory}\x1b[0m \x1b[1malready exists\x1b[0m.\n`;
     }
 
     return Enquirer.prompt([
@@ -145,6 +144,8 @@ async function downloadBoilerplate(
     directory: string,
     branch: string,
 ): Promise<void> {
+    const downloadDir = fs.mkdtempSync('mtasa-resource-boilerplate', 'utf8');
+
     await new Promise<void>((resolve, reject) => {
         const url = getBoilerplateUrl(branch);
         const request = https.get(url, {}, function (response) {
@@ -156,7 +157,9 @@ async function downloadBoilerplate(
                 );
             }
 
-            const unzipPipe = response.pipe(unzip.Extract({ path: directory }));
+            const unzipPipe = response.pipe(
+                unzip.Extract({ path: downloadDir }),
+            );
             unzipPipe.on('error', err => {
                 console.error('\x1b[31mError happen while unzipping\x1b[0m');
                 reject(err);
@@ -181,27 +184,11 @@ async function downloadBoilerplate(
     });
 
     console.log('Resource \x1b[32mdownloaded successfully\x1b[0m');
-    await new Promise<void>(function (callback, reject) {
-        mv(
-            path.join(directory, `resource-boilerplate-${branch}`),
-            directory,
-            { mkdirp: false, clobber: false },
-            function (err) {
-                if (err === null) {
-                    callback();
-                    return;
-                }
 
-                console.error(
-                    '\x1b[31mError happen while moved the unpacked boilerplate\x1b[0m',
-                );
-                console.error(err);
-                ts.sys.exit(1);
-
-                reject();
-            },
-        );
-    });
+    fs.renameSync(
+        path.join(downloadDir, `resource-boilerplate-${branch}`),
+        directory,
+    );
 }
 
 function prepareEnvironment(
@@ -215,10 +202,6 @@ function prepareEnvironment(
         ? `[${options.projectName}]`
         : options.projectName;
     const directory = path.join(rootDirectory, projectName);
-
-    fs.mkdirSync(directory, {
-        recursive: true,
-    });
 
     return {
         projectName,

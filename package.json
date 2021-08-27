@@ -26,7 +26,7 @@
         "prettier": "prettier --check .",
         "prettier-fix": "prettier --write .",
         "eslint": "eslint --max-warnings=0 .",
-        "test": "jest . --maxWorkers=3",
+        "test": "jest .",
         "test-create": "node utils/create-test.js",
         "convert-schema": "node utils/convert-schema.js && prettier --write src/compiler/meta/types.ts"
     },
@@ -55,15 +55,13 @@
         "prettier": "^2.3.2",
         "ts-jest": "^27.0.5",
         "ts-node": "^9.1.1",
-        "ttypescript": "^1.5.12",
-        "typescript": "^4.0.0"
+        "typescript": "^4.4.2"
     },
     "dependencies": {
         "enquirer": "^2.3.6",
         "js-yaml": "^4.1.0",
         "json5": "^2.2.0",
         "jsonschema": "^1.4.0",
-        "mv": "^2.1.1",
         "typescript-to-lua": "^1.0.0",
         "unzipper": "^0.10.11",
         "xml-js": "^1.6.11"
