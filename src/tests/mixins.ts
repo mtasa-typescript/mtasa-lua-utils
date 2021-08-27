@@ -91,7 +91,7 @@ export function callCliWithCustomArgsBeforeAll(
                 return;
             }
 
-            // Error, not nxpected
+            // Error, not expected
             callback(`Unexpected error: ${exitCode}`);
         });
     }, 60000);
@@ -109,7 +109,22 @@ export function stdoutContainsMessages(
 ): void {
     for (const message of messages) {
         test(`STDOUT contains message "${message}"`, () => {
-            expect(context.processOut).toContain(message);
+            expect(context.processOut.toLowerCase()).toContain(
+                message.toLowerCase(),
+            );
+        });
+    }
+}
+
+export function stderrContainsMessages(
+    context: CompilerProcessContext,
+    messages: string[],
+): void {
+    for (const message of messages) {
+        test(`STDERR contains message "${message}"`, () => {
+            expect(context.processErr.toLowerCase()).toContain(
+                message.toLowerCase(),
+            );
         });
     }
 }
