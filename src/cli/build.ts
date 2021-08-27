@@ -26,12 +26,13 @@ function printHelp() {
             spacer +
             '\x1b[0m[\x1b[34m--project \x1b[1;34mtsconfig.json\x1b[0m]\n' +
             spacer +
-            '\x1b[0m[\x1b[34m--tstlVersose \x1b[1;34mfalse\x1b[0m]\n' +
+            '\x1b[0m[\x1b[34m--tstlVerbose \x1b[1;34mfalse\x1b[0m]\n' +
             '\x1b[0m\n' +
+            'Arguments:\n' +
             '    \x1b[34m--help\x1b[0m                    Reveals help message\n' +
             '    \x1b[34m--meta        \x1b[1;34m<string>\x1b[0m    Specify path to mtasa-meta.yml file\n' +
             '    \x1b[34m--project     \x1b[1;34m<string>\x1b[0m    Specify path to tsconfig.json file\n' +
-            '    \x1b[34m--tstlVersove \x1b[1;34m<boolean>\x1b[0m   Provide verbose output useful for diagnosing problems\n',
+            '    \x1b[34m--tstlVerbose \x1b[1;34m<boolean>\x1b[0m   Provide verbose output useful for diagnosing problems\n',
     );
 }
 

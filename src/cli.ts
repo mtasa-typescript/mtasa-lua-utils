@@ -13,12 +13,14 @@ const HELP_MESSAGE =
     '\x1b[0m\n' +
     'Available commands:' +
     '\x1b[0m\n' +
-    '    \x1b[34mboilerplate   \x1b[0mInitialize MTASA TypeScript Boilerplate' +
+    '    \x1b[34mnew-project    \x1b[0mInitialize MTASA TypeScript Boilerplate' +
     '\x1b[0m\n' +
-    '    \x1b[34mbuild         \x1b[0mBuild TypeScript Resource' +
+    '    \x1b[34mnew-resource   \x1b[0mCreate new resource inside MTASA TypeScript Project' +
+    '\x1b[0m\n' +
+    '    \x1b[34mbuild          \x1b[0mBuild TypeScript Resource' +
     '\x1b[0m\n' +
     '\x1b[0m\n' +
-    'Example command, to get help about specified util:\n' +
+    'Example command, to get more specific help:\n' +
     '\x1b[35mmtasa-lua-utils \x1b[1mbuild \x1b[34m--help\x1b[0m';
 
 const ERROR_MESSAGE =

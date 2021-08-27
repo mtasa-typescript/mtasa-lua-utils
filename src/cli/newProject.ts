@@ -49,14 +49,15 @@ function parseOptions(args: string[]): ParsedOptions {
 }
 
 function printHelp() {
-    const spacer = '                                   ';
+    const spacer = '                                    ';
     console.log(
-        '\x1b[0mUsage: \x1b[35mmtasa-lua-utils \x1b[1mboilerplate ' +
+        '\x1b[0mUsage: \x1b[35mmtasa-lua-utils \x1b[1mnew-resource ' +
             '\x1b[0m[\x1b[34m--help\x1b[0m]\n' +
             spacer +
             '\x1b[0m[\x1b[34m--branch \x1b[1;34mmaster\x1b[0m] ' +
             '\x1b[0m\n' +
             '\x1b[0m\n' +
+            'Arguments:\n' +
             '    \x1b[34m--help\x1b[0m              Reveals help message\n' +
             '    \x1b[34m--branch \x1b[1;34m<string>\x1b[0m   Download boilerplate from specified branch\n' +
             '      List of branches: \x1b[34mhttps://github.com/mtasa-typescript/resource-boilerplate/branches\x1b[0m',
@@ -65,11 +66,6 @@ function printHelp() {
 
 function validateDirectory(directory: string): boolean {
     return fs.readdirSync(directory).length === 0;
-}
-
-function checkDirectoryName(directory: string): boolean {
-    const basename = path.basename(directory);
-    return basename.startsWith('[') && basename.endsWith(']');
 }
 
 export interface PromptOptions {
@@ -145,8 +141,11 @@ export function getBoilerplateUrl(branch: string): string {
     return `https://codeload.github.com/mtasa-typescript/resource-boilerplate/zip/refs/heads/${branch}`;
 }
 
-function downloadBoilerplate(directory: string, branch: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+async function downloadBoilerplate(
+    directory: string,
+    branch: string,
+): Promise<void> {
+    await new Promise<void>((resolve, reject) => {
         const url = getBoilerplateUrl(branch);
         const request = https.get(url, {}, function (response) {
             if (response.statusCode !== 200) {
@@ -173,33 +172,36 @@ function downloadBoilerplate(directory: string, branch: string): Promise<void> {
             );
             reject(err);
         });
-    })
-        .then(() => {
-            console.log('Resource \x1b[32mdownloaded successfully\x1b[0m');
-            mv(
-                path.join(directory, 'resource-boilerplate-master'),
-                directory,
-                { mkdirp: false, clobber: false },
-                function (err) {
-                    if (err === null) {
-                        return;
-                    }
+    }).catch(error => {
+        console.error(
+            '\x1b[31mError happen while downloading boilerplate:\x1b[0m\n' +
+                error,
+        );
+        ts.sys.exit(1);
+    });
 
-                    console.error(
-                        '\x1b[31mError happen while moved the unpacked boilerplate\x1b[0m',
-                    );
-                    console.error(err);
-                    ts.sys.exit(1);
-                },
-            );
-        })
-        .catch(error => {
-            console.error(
-                '\x1b[31mError happen while downloading boilerplate:\x1b[0m\n' +
-                    error,
-            );
-            ts.sys.exit(1);
-        });
+    console.log('Resource \x1b[32mdownloaded successfully\x1b[0m');
+    await new Promise<void>(function (callback, reject) {
+        mv(
+            path.join(directory, `resource-boilerplate-${branch}`),
+            directory,
+            { mkdirp: false, clobber: false },
+            function (err) {
+                if (err === null) {
+                    callback();
+                    return;
+                }
+
+                console.error(
+                    '\x1b[31mError happen while moved the unpacked boilerplate\x1b[0m',
+                );
+                console.error(err);
+                ts.sys.exit(1);
+
+                reject();
+            },
+        );
+    });
 }
 
 function prepareEnvironment(
@@ -224,6 +226,15 @@ function prepareEnvironment(
     };
 }
 
+function updatePackageJson(directory: string, options: PromptOptions): void {
+    let text = fs.readFileSync(path.join(directory, 'package.json'), 'utf8');
+    text = text.replace(
+        /"name": +"[^"]+"/g,
+        `"name": "${options.projectName}"`,
+    );
+    fs.writeFileSync(path.join(directory, 'package.json'), text, 'utf8');
+}
+
 export async function newProjectEntrypoint(args: string[]): Promise<void> {
     const options = parseOptions(args);
     if (options.help) {
@@ -243,4 +254,5 @@ export async function newProjectEntrypoint(args: string[]): Promise<void> {
     );
 
     await downloadBoilerplate(directory, options.branch);
+    updatePackageJson(directory, promptOptions);
 }
