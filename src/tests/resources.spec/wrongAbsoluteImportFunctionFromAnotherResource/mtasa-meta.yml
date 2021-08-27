@@ -1,0 +1,22 @@
+info:
+    name: Resource0
+    type: script
+
+compilerConfig:
+    srcDir: wrongAbsoluteImportFunctionFromAnotherResource/Resource0
+
+scripts:
+    - src: server.ts
+      type: server
+
+---
+info:
+    name: Resource1
+    type: script
+
+compilerConfig:
+    srcDir: wrongAbsoluteImportFunctionFromAnotherResource/Resource1
+
+scripts:
+    - src: server.ts
+      type: server

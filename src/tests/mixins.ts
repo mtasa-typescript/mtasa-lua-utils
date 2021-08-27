@@ -57,7 +57,9 @@ export function callCliWithCustomArgsBeforeAll(
             }
         };
 
-        loop(options.stdinContent ?? []);
+        if (options.stdinContent && options.stdinContent.length !== 0) {
+            loop(options.stdinContent);
+        }
 
         proc.stdout.pipe(
             concatStream(function (result) {

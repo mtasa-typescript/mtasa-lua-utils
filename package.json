@@ -24,12 +24,11 @@
         "build": "tsc --build",
         "watch": "tsc --build --watch",
         "prettier": "prettier --check .",
-        "test": "jest .",
-        "eslint": "eslint --max-warnings=0 .",
         "prettier-fix": "prettier --write .",
-        "convert-schema": "node utils/convert-schema.js && prettier --write src/compiler/meta/types.ts",
-        "create-test": "node utils/create-test.js",
-        "tstl": "tstl"
+        "eslint": "eslint --max-warnings=0 .",
+        "test": "jest . --maxWorkers=3",
+        "test-create": "node utils/create-test.js",
+        "convert-schema": "node utils/convert-schema.js && prettier --write src/compiler/meta/types.ts"
     },
     "bin": {
         "mtasa-lua-utils": "./dist/cli.js"

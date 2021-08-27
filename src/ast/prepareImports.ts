@@ -11,8 +11,9 @@ import { getIdentifierSymbolId } from 'typescript-to-lua/dist/transformation/uti
 import {
     getFileSide,
     getGlobalsTableName,
+    getImportNodeModuleFile,
     getResourceDirectoryName,
-    isRelativeImport,
+    isLocalImport,
 } from './utils';
 import * as path from 'path';
 import { CompilerOptions } from '../compiler/cli';
@@ -38,14 +39,12 @@ function resolveImportsFromAnotherModules(
     if (node.moduleSpecifier.kind !== ts.SyntaxKind.StringLiteral) {
         return [];
     }
-    const moduleSpecifier = node.moduleSpecifier as ts.StringLiteral;
-    if (!isRelativeImport(moduleSpecifier.text)) {
+    if (!isLocalImport(node, context)) {
         return [];
     }
 
-    const moduleFullPath = path.join(
-        path.dirname(context.sourceFile.fileName),
-        moduleSpecifier.text,
+    const moduleFullPath = path.resolve(
+        getImportNodeModuleFile(node, context).fileName,
     );
     const options = context.options as CompilerOptions;
 

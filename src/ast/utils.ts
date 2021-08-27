@@ -6,6 +6,7 @@ import { Node, TransformationContext } from 'typescript-to-lua';
 import { MTASAMeta, Script } from '../compiler/meta/types';
 import { CompilerOptions } from '../compiler/cli';
 import path from 'path';
+import * as ts from 'typescript';
 
 export function prepareOneToManyVisitorResult<P extends Node>(
     rawResult: OneToManyVisitorResult<P>,
@@ -60,4 +61,25 @@ export function getResourceDirectoryName(
     resourceMeta: Readonly<MTASAMeta>,
 ): string {
     return path.basename(resourceMeta.compilerConfig.srcDir);
+}
+
+export function getImportNodeModuleFile(
+    importNode: Readonly<ts.ImportDeclaration>,
+    context: TransformationContext,
+): ts.SourceFile {
+    return (<any>context.resolver).getExternalModuleFileFromDeclaration(
+        importNode,
+    );
+}
+
+export function isLocalImport(
+    importNode: Readonly<ts.ImportDeclaration>,
+    context: TransformationContext,
+): boolean {
+    const rootPath = path.resolve(context.options.rootDir ?? '.');
+    const modulePath = path.resolve(
+        getImportNodeModuleFile(importNode, context).fileName,
+    );
+
+    return modulePath.startsWith(rootPath);
 }
