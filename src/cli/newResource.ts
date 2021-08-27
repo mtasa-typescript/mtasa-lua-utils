@@ -2,7 +2,7 @@ import Enquirer from 'enquirer';
 import * as fs from 'fs';
 import * as path from 'path';
 import ts from 'typescript';
-import * as JSON from 'JSON5';
+import * as JSON5 from 'json5';
 
 export interface ParsedOptions {
     branch: string;
@@ -81,7 +81,7 @@ function createNewResourceEnvironment(
     rootDirectory: string,
     options: PromptOptions,
 ): void {
-    const tsconfig = JSON.parse(
+    const tsconfig = JSON5.parse(
         fs.readFileSync(path.join(rootDirectory, 'tsconfig.json'), 'utf8'),
     );
     const srcDirectory = path.join(
