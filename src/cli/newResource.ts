@@ -110,10 +110,15 @@ function appendNewResourceToMeta(
     rootDirectory: string,
     options: PromptOptions,
 ): void {
+    const mtasaMetaPath = path.join(rootDirectory, 'mtasa-meta.yml');
+    const splitter = '\n---\n';
+
+    const content = fs.readFileSync(mtasaMetaPath, 'utf8').trim();
+    const isEmpty = content === '';
+
     fs.appendFileSync(
-        path.join(rootDirectory, 'mtasa-meta.yml'),
-        `
----
+        mtasaMetaPath,
+        `${isEmpty ? '' : splitter}
 info:
     name: ${options.resourceName}
     type: script

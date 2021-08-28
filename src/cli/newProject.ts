@@ -4,6 +4,14 @@ import * as unzip from 'unzipper';
 import * as https from 'https';
 import * as path from 'path';
 import ts from 'typescript';
+import * as child_process from 'child_process';
+import {
+    deleteFolderSyncRecursive,
+    EnquirerArrayPromptOptions,
+    EnquirerChoiceExtended,
+    EnquirerMultiSelectPromptOptions,
+    EnquirerPromptOptionsExtended,
+} from './utils';
 
 export interface ParsedOptions {
     branch: string;
@@ -67,10 +75,18 @@ function validateDirectory(directory: string): boolean {
     return !fs.existsSync(directory);
 }
 
-export interface PromptOptions {
+export const enum BoilerplateFeatures {
+    WEB_STORM = 'webstorm',
+    VSCODE = 'vscode',
+    GITHUB = 'github',
+    EXAMPLE_RESOURCE = 'example',
+}
+
+export interface PromptResults {
     projectName: string;
     continue: boolean;
     putProjectNameInSquareBrackets: boolean;
+    features: BoilerplateFeatures[];
 }
 
 function promptAfterValidation(
@@ -94,7 +110,7 @@ function promptAfterValidation(
                       name: 'continue',
                       message:
                           warning +
-                          '\n\x1b[31m!\x1b[0m\x1b[1m Are you sure you want to continue?',
+                          '\n\x1b[31m⛊\x1b[0m\x1b[1m Are you sure you want to continue?',
                       initial: false,
                       result(result: string): string | Promise<string> {
                           if (!result) {
@@ -109,16 +125,72 @@ function promptAfterValidation(
     ]);
 }
 
-function promptData(): Promise<PromptOptions> {
-    const context = {
-        projectName: '',
+// See https://github.com/enquirer/enquirer/issues/370
+function getPromptFeatureMultiSelect(): EnquirerArrayPromptOptions {
+    const indicator: EnquirerChoiceExtended['indicator'] = function (
+        _,
+        choice,
+    ) {
+        return choice.enabled ? '⚫ ' : '⚪ ';
     };
+    const spacer = '\n   ';
+
+    return {
+        type: 'multiselect',
+        name: 'features',
+        initial: [0, 3],
+        message:
+            '\x1b[0m\x1b[1mSelect features you would like to use in your project\x1b[0m\n' +
+            '\x1b[36m>\x1b[0m Use \x1b[34mSpace\x1b[0m to select feature ' +
+            'and \x1b[34mEnter\x1b[0m to confirm\x1b[0m',
+        choices: [
+            {
+                name: '\x1b[1mVS Code configuration\x1b[0m',
+                value: BoilerplateFeatures.VSCODE,
+                hint: spacer + 'Select, if you are going to use VS Code\x1b[0m',
+                indicator: indicator,
+            },
+            {
+                name: '\x1b[1mWebStorm configuration\x1b[0m',
+                value: BoilerplateFeatures.WEB_STORM,
+                hint:
+                    spacer +
+                    'Select, if you are going to use JetBrains WebStorm\x1b[0m',
+                indicator: indicator,
+            },
+            {
+                name: '\x1b[1mGitHub configuration\x1b[0m',
+                value: BoilerplateFeatures.GITHUB,
+                hint:
+                    spacer +
+                    'Select, if you are going to create ' +
+                    'open-source project and use GitHub\x1b[0m',
+                indicator: indicator,
+            },
+            {
+                name: '\x1b[1mExample Resource\x1b[0m',
+                value: BoilerplateFeatures.EXAMPLE_RESOURCE,
+                hint:
+                    spacer +
+                    'Select, if you would like the example resource ' +
+                    'to appear in the project\x1b[0m',
+                indicator: indicator,
+            },
+        ],
+    } as EnquirerMultiSelectPromptOptions;
+}
+
+function promptData(): Promise<PromptResults> {
+    const context: Partial<PromptResults> = {};
 
     return Enquirer.prompt([
         {
             type: 'input',
             name: 'projectName',
             message: 'Enter the project name:',
+            validate(value: string): boolean {
+                return !!value;
+            },
             result(value: string): string {
                 context.projectName = value;
                 return value;
@@ -132,7 +204,48 @@ function promptData(): Promise<PromptOptions> {
                 'MTASA will correctly determine compiled resource\n' +
                 '\x1b[36m>\x1b[0m\x1b[1m Would you like to put your project name into square brackets?',
             initial: true,
+            result(value): string {
+                // See https://github.com/enquirer/enquirer/issues/370
+                context.putProjectNameInSquareBrackets =
+                    value as unknown as boolean;
+                return value;
+            },
         },
+        {
+            ...getPromptFeatureMultiSelect(),
+            result(value: readonly string[]): string[] {
+                const mapped = Object.values(this.map(value));
+                context.features = mapped as BoilerplateFeatures[];
+                return mapped;
+            },
+        } as EnquirerMultiSelectPromptOptions,
+        {
+            type: 'toggle',
+            name: 'continue',
+            prefix: '⚒',
+            message: () =>
+                `Directory will be created \x1b[34m${path.resolve(
+                    getProjectName({
+                        projectName: context.projectName ?? 'undefined',
+                        putProjectNameInSquareBrackets:
+                            context.putProjectNameInSquareBrackets ?? true,
+                    }),
+                )}` +
+                '\x1b[0m\n' +
+                '\x1b[36m⚒\x1b[0m Command \x1b[34mnpm install -D\x1b[0m ' +
+                'will be called inside the directory ' +
+                'to initialize the project' +
+                '\x1b[0m\n' +
+                '\x1b[36m⚒\x1b[0m \x1b[1mConfirm?\x1b[0m',
+            initial: true,
+            result(result: string): string {
+                if (!result) {
+                    console.log('Exiting...');
+                    ts.sys.exit(1);
+                }
+                return result;
+            },
+        } as EnquirerPromptOptionsExtended,
     ]);
 }
 
@@ -144,6 +257,7 @@ async function downloadBoilerplate(
     directory: string,
     branch: string,
 ): Promise<void> {
+    console.log('\x1b[36m♢\x1b[0m Downloading boilerplate');
     const downloadDir = fs.mkdtempSync('mtasa-resource-boilerplate', 'utf8');
 
     await new Promise<void>((resolve, reject) => {
@@ -151,9 +265,9 @@ async function downloadBoilerplate(
         const request = https.get(url, {}, function (response) {
             if (response.statusCode !== 200) {
                 reject(
-                    'Check your internet connecting and specified branch\n' +
-                        `Also, try to open this URL manually: ${url}\n` +
-                        `Response status code: \x1b[1;31m${response.statusCode}\x1b[0m`,
+                    '\x1b[31m⛊\x1b[0m Check your internet connecting and specified branch\n' +
+                        `\x1b[31m⛊\x1b[0m Also, try to open this URL manually: ${url}\n` +
+                        `\x1b[31m⛊\x1b[0m Response status code: \x1b[1;31m${response.statusCode}\x1b[0m`,
                 );
             }
 
@@ -161,46 +275,66 @@ async function downloadBoilerplate(
                 unzip.Extract({ path: downloadDir }),
             );
             unzipPipe.on('error', err => {
-                console.error('\x1b[31mError happen while unzipping\x1b[0m');
+                console.error(
+                    '\x1b[31m⛊\x1b[0m ' +
+                        '\x1b[31mError happen while unzipping\x1b[0m',
+                );
                 reject(err);
             });
             unzipPipe.on('close', () => {
-                console.log('Download complete\x1b[0m');
+                console.log('\x1b[32m♦\x1b[0m Download complete\x1b[0m');
                 resolve();
             });
         });
         request.on('error', err => {
             console.error(
-                '\x1b[31mError happen while performing request\x1b[0m',
+                '\x1b[31m⛊\x1b[0m ' +
+                    '\x1b[31mError happen while performing request\x1b[0m',
             );
             reject(err);
         });
     }).catch(error => {
         console.error(
-            '\x1b[31mError happen while downloading boilerplate:\x1b[0m\n' +
+            '\x1b[31m⛊\x1b[0m ' +
+                '\x1b[31mError happen while downloading boilerplate:\x1b[0m\n' +
                 error,
         );
+        deleteFolderSyncRecursive(downloadDir);
         ts.sys.exit(1);
     });
 
-    console.log('Resource \x1b[32mdownloaded successfully\x1b[0m');
+    console.log(
+        '\x1b[32m♦\x1b[0m The boilerplate unpacked successfully\x1b[0m',
+    );
 
     fs.renameSync(
         path.join(downloadDir, `resource-boilerplate-${branch}`),
         directory,
     );
+    deleteFolderSyncRecursive(downloadDir);
+    console.log(
+        `\x1b[32m♦\x1b[0m Filled the directory ` +
+            `\x1b[34m${directory}\x1b[0m`,
+    );
+}
+
+function getProjectName(options: {
+    putProjectNameInSquareBrackets: boolean;
+    projectName: string;
+}) {
+    return options.putProjectNameInSquareBrackets
+        ? `[${options.projectName}]`
+        : options.projectName;
 }
 
 function prepareEnvironment(
     rootDirectory: string,
-    options: PromptOptions,
+    options: PromptResults,
 ): {
     projectName: string;
     directory: string;
 } {
-    const projectName = options.putProjectNameInSquareBrackets
-        ? `[${options.projectName}]`
-        : options.projectName;
+    const projectName = getProjectName(options);
     const directory = path.join(rootDirectory, projectName);
 
     return {
@@ -209,14 +343,67 @@ function prepareEnvironment(
     };
 }
 
-function updatePackageJson(directory: string, options: PromptOptions): void {
+export function camelToKebabCase(str: string): string {
+    if (!str) {
+        return '';
+    }
+    str = str[0].toLowerCase() + str.slice(1);
+    return str.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+}
+
+type PostProcessFunction = (directory: string, options: PromptResults) => void;
+
+const updatePackageJson: PostProcessFunction = function (directory, options) {
     let text = fs.readFileSync(path.join(directory, 'package.json'), 'utf8');
     text = text.replace(
         /"name": +"[^"]+"/g,
-        `"name": "${options.projectName}"`,
+        `"name": "${camelToKebabCase(options.projectName)}"`,
     );
     fs.writeFileSync(path.join(directory, 'package.json'), text, 'utf8');
-}
+};
+
+const setFeatures: PostProcessFunction = function (directory, options) {
+    console.log(`\x1b[36m♢\x1b[0m Setting up features\x1b[0m`);
+    const features = options.features;
+    if (!features.includes(BoilerplateFeatures.VSCODE)) {
+        deleteFolderSyncRecursive(path.join(directory, '.vscode'));
+
+        console.log(`\x1b[32m♦\x1b[0m Removed VSCode feature\x1b[0m`);
+    }
+
+    if (!features.includes(BoilerplateFeatures.WEB_STORM)) {
+        deleteFolderSyncRecursive(path.join(directory, '.idea'));
+
+        console.log(`\x1b[32m♦\x1b[0m Removed WebStorm feature\x1b[0m`);
+    }
+
+    if (!features.includes(BoilerplateFeatures.GITHUB)) {
+        deleteFolderSyncRecursive(path.join(directory, '.github'));
+
+        console.log(`\x1b[32m♦\x1b[0m Removed GitHub feature\x1b[0m`);
+    }
+
+    if (!features.includes(BoilerplateFeatures.EXAMPLE_RESOURCE)) {
+        deleteFolderSyncRecursive(
+            path.join(directory, 'src/TypeScriptResource'),
+        );
+        fs.rmSync(path.join(directory, 'mtasa-meta.yml'));
+        fs.writeFileSync(path.join(directory, 'mtasa-meta.yml'), '', 'utf8');
+
+        console.log(`\x1b[32m♦\x1b[0m Removed Example Resource\x1b[0m`);
+    }
+
+    console.log(`\x1b[32m♦\x1b[0m Features setup complete\x1b[0m`);
+};
+
+const execInit: PostProcessFunction = function (directory, options) {
+    console.log(`\x1b[36m♢\x1b[0m Downloading Node Modules\x1b[0m`);
+    child_process.execSync('npm install -D', {
+        cwd: directory,
+        stdio: ['inherit', 'inherit', 'inherit'],
+    });
+    console.log(`\x1b[32m♦\x1b[0m Node Modules prepared\x1b[0m`);
+};
 
 export async function newProjectEntrypoint(args: string[]): Promise<void> {
     const options = parseOptions(args);
@@ -237,5 +424,23 @@ export async function newProjectEntrypoint(args: string[]): Promise<void> {
     );
 
     await downloadBoilerplate(directory, options.branch);
-    updatePackageJson(directory, promptOptions);
+
+    (<PostProcessFunction[]>[updatePackageJson, setFeatures, execInit]).forEach(
+        fun => fun(directory, promptOptions),
+    );
+
+    console.log(
+        '\n\x1b[36m>\x1b[0m ' +
+            `Project \x1b[34m${promptOptions.projectName}\x1b[0m ` +
+            'has been created.\x1b[0m' +
+            '\n  \x1b[34m' +
+            directory +
+            '\x1b[0m\n\n' +
+            '\x1b[36m>\x1b[0m ' +
+            'Use \x1b[34mmtasa-lua-utils new-resource\x1b[0m inside ' +
+            'the project directory to create new resource\n' +
+            '\x1b[36m>\x1b[0m ' +
+            'Use \x1b[34mmtasa-lua-utils build\x1b[0m inside ' +
+            'the project directory to build code',
+    );
 }

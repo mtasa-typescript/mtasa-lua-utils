@@ -34,11 +34,7 @@ function parseAndExecuteArguments(): void {
     }
     if (ts.sys.args[0] === 'new-project') {
         newProjectEntrypoint(ts.sys.args.slice(1))
-            .then(() =>
-                console.log(
-                    '\x1b[32mMTASA TypeScript project has been set up successfully\x1b[0m',
-                ),
-            )
+            .then(() => null)
             .catch(err => {
                 console.error(err);
             });
