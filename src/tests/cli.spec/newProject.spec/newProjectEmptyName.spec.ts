@@ -24,12 +24,11 @@ describe('New Project CLI command (empty project name)', () => {
             stdinContent: [
                 '',
                 CLI_ENQUIRER_KEY.ENTER,
-                ...getStdinContentForNewProjectCommand('MyProject'),
+                ...getStdinContentForNewProjectCommand('MyProjectEmptyName'),
             ],
             cwd: 'src/tests/dist',
         },
     );
 
-    stderrEmptyTest(context);
     stdoutContainsMessages(context, ['Invalid input']);
 });

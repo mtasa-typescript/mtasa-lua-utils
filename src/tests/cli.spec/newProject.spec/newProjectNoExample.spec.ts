@@ -31,8 +31,6 @@ describe('New Project CLI command (no example resource)', () => {
         },
     );
 
-    stderrEmptyTest(context);
-
     targetFileCheckTest(targetPath, true);
     targetFileCheckTest(path.join(targetPath, '.idea'), false);
     targetFileCheckTest(path.join(targetPath, '.vscode'), true);

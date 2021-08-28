@@ -5,7 +5,7 @@ import {
     stdoutContainsMessages,
     targetFileCheckTest,
 } from '../../mixins';
-import { getStdinContentForNewProjectCommand } from "../../cliUtils";
+import { getStdinContentForNewProjectCommand } from '../../cliUtils';
 import path from 'path';
 import fs from 'fs';
 
@@ -23,14 +23,11 @@ describe('New Project CLI command', () => {
         false,
         {
             executable: '../../../dist/cli.js',
-            stdinContent: [
-                ...getStdinContentForNewProjectCommand('MyProject')
-            ],
+            stdinContent: [...getStdinContentForNewProjectCommand('MyProject')],
             cwd: 'src/tests/dist',
         },
     );
 
-    stderrEmptyTest(context);
     stdoutContainsMessages(context, [
         'Enter the project name',
         'project name into square brackets',

@@ -5,7 +5,10 @@ import {
     stdoutContainsMessages,
     targetFileCheckTest,
 } from '../../mixins';
-import { CLI_ENQUIRER_KEY, getStdinContentForNewProjectCommand } from "../../cliUtils";
+import {
+    CLI_ENQUIRER_KEY,
+    getStdinContentForNewProjectCommand,
+} from '../../cliUtils';
 import path from 'path';
 import fs from 'fs';
 
@@ -24,7 +27,7 @@ describe('New Resource CLI command', () => {
         {
             executable: '../../../dist/cli.js',
             stdinContent: [
-              ...getStdinContentForNewProjectCommand('NewResource')
+                ...getStdinContentForNewProjectCommand('NewResource'),
             ],
             cwd: 'src/tests/dist',
         },
@@ -41,7 +44,6 @@ describe('New Resource CLI command', () => {
         cwd: targetPath,
     });
 
-    stderrEmptyTest(context);
     stdoutContainsMessages(context, ['Enter the resource name']);
 
     targetFileCheckTest(targetPath, true);

@@ -44,8 +44,6 @@ describe('New Resource CLI command (empty meta)', () => {
         cwd: targetPath,
     });
 
-    stderrEmptyTest(context);
-
     targetFileCheckTest(targetPath, true);
     targetFileCheckTest(path.join(targetPath, 'mtasa-meta.yml'), true);
 
