@@ -59,7 +59,7 @@ export function callCliWithCustomArgsBeforeAll(
 
                     proc.stdin.write(content[0]);
                     loop(content.slice(1));
-                }, 200);
+                }, 500);
             } else {
                 proc.stdin.end();
             }
