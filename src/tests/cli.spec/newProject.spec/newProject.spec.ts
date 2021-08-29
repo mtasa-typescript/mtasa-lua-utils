@@ -1,40 +1,42 @@
-import {
-    callCliWithCustomArgsBeforeAll,
-    CompilerProcessContext,
-    stderrEmptyTest,
-    stdoutContainsMessages,
-    targetFileCheckTest,
-} from '../../mixins';
-import { getStdinContentForNewProjectCommand } from '../../cliUtils';
+import { targetFileCheckTest } from '../../mixins';
 import path from 'path';
 import fs from 'fs';
+import { BoilerplateFeatures, newProject } from '../../../cli/newProject';
 
 describe('New Project CLI command', () => {
+    let consoleSpy: jest.SpyInstance<
+        void,
+        [message?: string, ...additionalMessage: string[]]
+    >;
     const targetPath = 'src/tests/dist/[MyProject]';
 
-    const context: CompilerProcessContext = {
-        processOut: '',
-        processErr: '',
-    };
+    beforeAll(() => {
+        consoleSpy = jest.spyOn(console, 'log');
+        fs.mkdirSync('src/tests/dist', { recursive: true });
+    });
 
-    callCliWithCustomArgsBeforeAll(
-        ['new-project', '--branch', 'develop'],
-        context,
-        false,
-        {
-            executable: '../../../dist/cli.js',
-            stdinContent: [...getStdinContentForNewProjectCommand('MyProject')],
-            cwd: 'src/tests/dist',
-        },
-    );
+    beforeAll(async () => {
+        await newProject(
+            path.basename(targetPath),
+            targetPath,
+            {
+                branch: 'develop',
+                help: false,
+            },
+            {
+                projectName: 'MyProject',
+                features: [
+                    BoilerplateFeatures.VSCODE,
+                    BoilerplateFeatures.EXAMPLE_RESOURCE,
+                ],
+                continue: true,
+                putProjectNameInSquareBrackets: true,
+            },
+        );
+    }, 60000);
 
-    stdoutContainsMessages(context, [
-        'Enter the project name',
-        'project name into square brackets',
+    [
         '[MyProject]',
-        'Select features',
-        'npm install -D',
-        'Directory will be created',
         'Download complete',
         'Filled the directory',
         'Features setup complete',
@@ -42,7 +44,13 @@ describe('New Project CLI command', () => {
         'has been created',
         'mtasa-lua-utils new-resource',
         'mtasa-lua-utils build',
-    ]);
+    ].forEach(message =>
+        test(`console.log contains message: "${message}"`, () => {
+            expect(
+                consoleSpy.mock.calls.map(v => v.join(' ')).join('\n'),
+            ).toContain(message);
+        }),
+    );
 
     targetFileCheckTest(targetPath, true);
     targetFileCheckTest(path.join(targetPath, '.idea'), false);

@@ -327,7 +327,7 @@ function getProjectName(options: {
         : options.projectName;
 }
 
-function prepareEnvironment(
+function getEnvironmentData(
     rootDirectory: string,
     options: PromptResults,
 ): {
@@ -405,33 +405,10 @@ const execInit: PostProcessFunction = function (directory, options) {
     console.log(`\x1b[32m♦\x1b[0m Node Modules prepared\x1b[0m`);
 };
 
-export async function newProjectEntrypoint(args: string[]): Promise<void> {
-    const options = parseOptions(args);
-    if (options.help) {
-        printHelp();
-        ts.sys.exit(0);
-    }
-
-    const rootDirectory = path.resolve('.');
-    const promptOptions = await promptData();
-    const { directory } = prepareEnvironment(rootDirectory, promptOptions);
-
-    await promptAfterValidation(
-        {
-            warnDirectoryIsNotEmpty: !validateDirectory(directory),
-        },
-        directory,
-    );
-
-    await downloadBoilerplate(directory, options.branch);
-
-    (<PostProcessFunction[]>[updatePackageJson, setFeatures, execInit]).forEach(
-        fun => fun(directory, promptOptions),
-    );
-
+const showSuccessMessage: PostProcessFunction = function (directory, options) {
     console.log(
         '\n\x1b[36m>\x1b[0m ' +
-            `Project \x1b[34m${promptOptions.projectName}\x1b[0m ` +
+            `Project \x1b[34m${options.projectName}\x1b[0m ` +
             'has been created.\x1b[0m' +
             '\n  \x1b[34m' +
             directory +
@@ -443,4 +420,44 @@ export async function newProjectEntrypoint(args: string[]): Promise<void> {
             'Use \x1b[34mmtasa-lua-utils build\x1b[0m inside ' +
             'the project directory to build code',
     );
+};
+
+export async function newProject(
+    rootDirectory: string,
+    targetDirectory: string,
+    options: ParsedOptions,
+    promptResults: PromptResults,
+): Promise<void> {
+    await downloadBoilerplate(targetDirectory, options.branch);
+
+    (<PostProcessFunction[]>[
+        updatePackageJson,
+        setFeatures,
+        execInit,
+        showSuccessMessage,
+    ]).forEach(fun => fun(targetDirectory, promptResults));
+}
+
+export async function newProjectEntrypoint(args: string[]): Promise<void> {
+    const options = parseOptions(args);
+    if (options.help) {
+        printHelp();
+        ts.sys.exit(0);
+    }
+
+    const rootDirectory = path.resolve('.');
+    const promptResults = await promptData();
+    const { directory: targetDirectory } = getEnvironmentData(
+        rootDirectory,
+        promptResults,
+    );
+
+    await promptAfterValidation(
+        {
+            warnDirectoryIsNotEmpty: !validateDirectory(targetDirectory),
+        },
+        targetDirectory,
+    );
+
+    await newProject(rootDirectory, targetDirectory, options, promptResults);
 }
