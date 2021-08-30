@@ -131,7 +131,7 @@ function getPromptFeatureMultiSelect(): EnquirerArrayPromptOptions {
         _,
         choice,
     ) {
-        return choice.enabled ? '⚫ ' : '⚪ ';
+        return choice.enabled ? '▶ ' : '> ';
     };
     const spacer = '\n   ';
 
