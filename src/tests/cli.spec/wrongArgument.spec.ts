@@ -10,9 +10,7 @@ describe('CLI command with wrong subcommand', () => {
         processErr: '',
     };
 
-    callCliWithCustomArgsBeforeAll(['unexpected-command'], context, true, {
-        stdinContent: [],
-    });
+    callCliWithCustomArgsBeforeAll(['unexpected-command'], context, true);
 
     stderrContainsMessages(context, ['Unexpected argument', '--help']);
 });

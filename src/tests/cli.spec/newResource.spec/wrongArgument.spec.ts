@@ -14,9 +14,6 @@ describe('New Resource CLI command with wrong argument', () => {
         ['new-resource', '--unexpected-argument'],
         context,
         true,
-        {
-            stdinContent: [],
-        },
     );
 
     stderrContainsMessages(context, ['Unexpected argument', '--help']);

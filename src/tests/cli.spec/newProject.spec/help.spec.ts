@@ -11,9 +11,7 @@ describe('New Project CLI command with --help', () => {
         processErr: '',
     };
 
-    callCliWithCustomArgsBeforeAll(['new-project', '--help'], context, false, {
-        stdinContent: [],
-    });
+    callCliWithCustomArgsBeforeAll(['new-project', '--help'], context, false);
 
     stderrEmptyTest(context);
     stdoutContainsMessages(context, [

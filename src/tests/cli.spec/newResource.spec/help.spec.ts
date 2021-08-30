@@ -11,9 +11,7 @@ describe('New Resource CLI command with --help', () => {
         processErr: '',
     };
 
-    callCliWithCustomArgsBeforeAll(['new-resource', '--help'], context, false, {
-        stdinContent: [],
-    });
+    callCliWithCustomArgsBeforeAll(['new-resource', '--help'], context, false);
 
     stderrEmptyTest(context);
     stdoutContainsMessages(context, [

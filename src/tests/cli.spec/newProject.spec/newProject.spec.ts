@@ -2,18 +2,22 @@ import { targetFileCheckTest } from '../../mixins';
 import path from 'path';
 import fs from 'fs';
 import { BoilerplateFeatures, newProject } from '../../../cli/newProject';
+import {
+    CLI_EXECUTING_TIMEOUT,
+    consoleLogContains,
+    ConsoleSpyType,
+    prepareDefaultCliTest,
+} from '../mixins';
 
 describe('New Project CLI command', () => {
-    let consoleSpy: jest.SpyInstance<
-        void,
-        [message?: string, ...additionalMessage: string[]]
-    >;
+    const context: {
+        consoleSpy: ConsoleSpyType;
+    } = {
+        consoleSpy: undefined as unknown as ConsoleSpyType, // lazyinit
+    };
     const targetPath = 'src/tests/dist/[MyProject]';
 
-    beforeAll(() => {
-        consoleSpy = jest.spyOn(console, 'log');
-        fs.mkdirSync('src/tests/dist', { recursive: true });
-    });
+    prepareDefaultCliTest(context, targetPath);
 
     beforeAll(async () => {
         await newProject(
@@ -33,9 +37,9 @@ describe('New Project CLI command', () => {
                 putProjectNameInSquareBrackets: true,
             },
         );
-    }, 60000);
+    }, CLI_EXECUTING_TIMEOUT);
 
-    [
+    consoleLogContains(context, [
         '[MyProject]',
         'Download complete',
         'Filled the directory',
@@ -44,13 +48,7 @@ describe('New Project CLI command', () => {
         'has been created',
         'mtasa-lua-utils new-resource',
         'mtasa-lua-utils build',
-    ].forEach(message =>
-        test(`console.log contains message: "${message}"`, () => {
-            expect(
-                consoleSpy.mock.calls.map(v => v.join(' ')).join('\n'),
-            ).toContain(message);
-        }),
-    );
+    ]);
 
     targetFileCheckTest(targetPath, true);
     targetFileCheckTest(path.join(targetPath, '.idea'), false);

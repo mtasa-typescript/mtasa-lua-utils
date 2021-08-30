@@ -55,11 +55,11 @@ function validateDirectory(directory: string): boolean {
     );
 }
 
-export interface PromptOptions {
+export interface PromptResults {
     resourceName: string;
 }
 
-function promptData(): Promise<PromptOptions> {
+function promptData(): Promise<PromptResults> {
     const context = {
         projectName: '',
     };
@@ -79,7 +79,7 @@ function promptData(): Promise<PromptOptions> {
 
 function createNewResourceEnvironment(
     rootDirectory: string,
-    options: PromptOptions,
+    options: PromptResults,
 ): void {
     const tsconfig = JSON5.parse(
         fs.readFileSync(path.join(rootDirectory, 'tsconfig.json'), 'utf8'),
@@ -108,7 +108,7 @@ function createNewResourceEnvironment(
 
 function appendNewResourceToMeta(
     rootDirectory: string,
-    options: PromptOptions,
+    options: PromptResults,
 ): void {
     const mtasaMetaPath = path.join(rootDirectory, 'mtasa-meta.yml');
     const splitter = '\n---\n';
@@ -142,6 +142,14 @@ scripts:
     );
 }
 
+export async function newResource(
+    rootDirectory: string,
+    promptResults: PromptResults,
+): Promise<void> {
+    createNewResourceEnvironment(rootDirectory, promptResults);
+    appendNewResourceToMeta(rootDirectory, promptResults);
+}
+
 export async function newResourceEntrypoint(args: string[]): Promise<void> {
     const options = parseOptions(args);
     if (options.help) {
@@ -158,8 +166,6 @@ export async function newResourceEntrypoint(args: string[]): Promise<void> {
         ts.sys.exit(1);
     }
 
-    const promptOptions = await promptData();
-
-    createNewResourceEnvironment(rootDirectory, promptOptions);
-    appendNewResourceToMeta(rootDirectory, promptOptions);
+    const promptResults = await promptData();
+    await newResource(rootDirectory, promptResults);
 }

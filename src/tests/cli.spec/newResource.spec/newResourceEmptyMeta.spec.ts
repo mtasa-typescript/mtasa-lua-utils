@@ -1,51 +1,28 @@
-import {
-    callCliWithCustomArgsBeforeAll,
-    CompilerProcessContext,
-    stderrEmptyTest,
-    targetFileCheckTest,
-} from '../../mixins';
-import {
-    CLI_ENQUIRER_KEY,
-    getStdinContentForNewProjectCommandNoExample,
-} from '../../cliUtils';
 import path from 'path';
 import fs from 'fs';
+import {
+    CLI_EXECUTING_TIMEOUT,
+    ConsoleSpyType,
+    prepareDefaultCliTest,
+    prepareProjectEnvironment,
+} from '../mixins';
+import { newResource } from '../../../cli/newResource';
 
 describe('New Resource CLI command (empty meta)', () => {
-    const targetPath = 'src/tests/dist/[NewResourceEmptyMeta]';
-
-    const context: CompilerProcessContext = {
-        processOut: '',
-        processErr: '',
+    const context: {
+        consoleSpy: ConsoleSpyType;
+    } = {
+        consoleSpy: undefined as unknown as ConsoleSpyType, // lazyinit
     };
-    callCliWithCustomArgsBeforeAll(
-        ['new-project', '--branch', 'develop'],
-        context,
-        false,
-        {
-            executable: '../../../dist/cli.js',
-            stdinContent: [
-                ...getStdinContentForNewProjectCommandNoExample(
-                    'NewResourceEmptyMeta',
-                ),
-            ],
-            cwd: 'src/tests/dist',
-        },
-    );
+    const targetPath = 'src/tests/dist/[NewResourceEmptyMeta]';
+    prepareDefaultCliTest(context, targetPath);
+    prepareProjectEnvironment(targetPath);
 
-    callCliWithCustomArgsBeforeAll(['new-resource'], context, false, {
-        executable: '../../../../dist/cli.js',
-        stdinContent: [
-            'NewResource',
-            CLI_ENQUIRER_KEY.ENTER,
-            CLI_ENQUIRER_KEY.ENTER,
-            CLI_ENQUIRER_KEY.ENTER,
-        ],
-        cwd: targetPath,
-    });
-
-    targetFileCheckTest(targetPath, true);
-    targetFileCheckTest(path.join(targetPath, 'mtasa-meta.yml'), true);
+    beforeAll(async () => {
+        await newResource(targetPath, {
+            resourceName: 'NewResourceEmptyMeta',
+        });
+    }, CLI_EXECUTING_TIMEOUT);
 
     test('The target file "mtasa-meta.yml" contains new resource data', () => {
         const content = fs.readFileSync(

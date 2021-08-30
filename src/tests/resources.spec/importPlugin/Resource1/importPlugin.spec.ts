@@ -2,7 +2,6 @@ import {
     callCompilerWithMetaPathBeforeAll,
     CompilerProcessContext,
     stderrEmptyTest,
-    targetDirectoryFilesLengthTest,
     targetFileCheckTest,
 } from '../../../mixins';
 import * as path from 'path';

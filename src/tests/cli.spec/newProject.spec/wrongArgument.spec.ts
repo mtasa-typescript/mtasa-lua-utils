@@ -14,9 +14,6 @@ describe('New Project CLI command with wrong argument', () => {
         ['new-project', '--unexpected-argument'],
         context,
         true,
-        {
-            stdinContent: [],
-        },
     );
 
     stderrContainsMessages(context, ['Unexpected argument', '--help']);

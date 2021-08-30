@@ -9,7 +9,6 @@ export interface CompilerProcessContext {
 
 export interface CliCustomOptions {
     executable?: string;
-    stdinContent?: string[];
     cwd?: string;
 }
 
@@ -48,26 +47,6 @@ export function callCliWithCustomArgsBeforeAll(
                 cwd: options.cwd,
             },
         );
-        proc.stdin.setDefaultEncoding('utf8');
-
-        const loop = function (content: readonly string[]) {
-            if (content.length > 0) {
-                setTimeout(function () {
-                    if (proc.stdin.destroyed) {
-                        return;
-                    }
-
-                    proc.stdin.write(content[0]);
-                    loop(content.slice(1));
-                }, 500);
-            } else {
-                proc.stdin.end();
-            }
-        };
-
-        if (options.stdinContent && options.stdinContent.length !== 0) {
-            loop(options.stdinContent);
-        }
 
         proc.stdout.pipe(
             concatStream(function (result) {

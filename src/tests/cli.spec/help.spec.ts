@@ -10,9 +10,7 @@ describe('CLI command with --help', () => {
         processErr: '',
     };
 
-    callCliWithCustomArgsBeforeAll(['--help'], context, false, {
-        stdinContent: [],
-    });
+    callCliWithCustomArgsBeforeAll(['--help'], context, false);
 
     stderrContainsMessages(context, [
         'mtasa-lua-utils version',

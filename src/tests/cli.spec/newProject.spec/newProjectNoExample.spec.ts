@@ -1,38 +1,46 @@
-import {
-    callCliWithCustomArgsBeforeAll,
-    CompilerProcessContext,
-    stderrEmptyTest,
-    targetFileCheckTest,
-} from '../../mixins';
-import { getStdinContentForNewProjectCommandNoExample } from '../../cliUtils';
+import { targetFileCheckTest } from '../../mixins';
 import path from 'path';
 import fs from 'fs';
+import {
+    CLI_EXECUTING_TIMEOUT,
+    ConsoleSpyType,
+    prepareDefaultCliTest,
+} from '../mixins';
+import { BoilerplateFeatures, newProject } from '../../../cli/newProject';
 
 describe('New Project CLI command (no example resource)', () => {
+    const context: {
+        consoleSpy: ConsoleSpyType;
+    } = {
+        consoleSpy: undefined as unknown as ConsoleSpyType, // lazyinit
+    };
     const targetPath = 'src/tests/dist/[MyProjectNoExample]';
 
-    const context: CompilerProcessContext = {
-        processOut: '',
-        processErr: '',
-    };
+    prepareDefaultCliTest(context, targetPath);
 
-    callCliWithCustomArgsBeforeAll(
-        ['new-project', '--branch', 'develop'],
-        context,
-        false,
-        {
-            executable: '../../../dist/cli.js',
-            stdinContent: [
-                ...getStdinContentForNewProjectCommandNoExample(
-                    'MyProjectNoExample',
-                ),
-            ],
-            cwd: 'src/tests/dist',
-        },
-    );
+    beforeAll(async () => {
+        await newProject(
+            path.basename(targetPath),
+            targetPath,
+            {
+                branch: 'develop',
+                help: false,
+            },
+            {
+                projectName: 'MyProjectNoExample',
+                features: [
+                    BoilerplateFeatures.VSCODE,
+                    BoilerplateFeatures.GITHUB,
+                ],
+                continue: true,
+                putProjectNameInSquareBrackets: true,
+            },
+        );
+    }, CLI_EXECUTING_TIMEOUT);
 
     targetFileCheckTest(targetPath, true);
     targetFileCheckTest(path.join(targetPath, '.idea'), false);
+    targetFileCheckTest(path.join(targetPath, '.github'), true);
     targetFileCheckTest(path.join(targetPath, '.vscode'), true);
     targetFileCheckTest(path.join(targetPath, 'tsconfig.json'), true);
     targetFileCheckTest(path.join(targetPath, 'mtasa-meta.yml'), true);

@@ -1,50 +1,37 @@
-import {
-    callCliWithCustomArgsBeforeAll,
-    CompilerProcessContext,
-    stderrEmptyTest,
-    stdoutContainsMessages,
-    targetFileCheckTest,
-} from '../../mixins';
-import {
-    CLI_ENQUIRER_KEY,
-    getStdinContentForNewProjectCommand,
-} from '../../cliUtils';
+import { targetFileCheckTest } from '../../mixins';
 import path from 'path';
 import fs from 'fs';
+import {
+    CLI_EXECUTING_TIMEOUT,
+    ConsoleSpyType,
+    prepareDefaultCliTest,
+    prepareProjectEnvironment,
+} from '../mixins';
+import { newResource } from '../../../cli/newResource';
 
 describe('New Resource CLI command', () => {
-    const targetPath = 'src/tests/dist/[NewResource]';
-
-    const context: CompilerProcessContext = {
-        processOut: '',
-        processErr: '',
+    const context: {
+        consoleSpy: ConsoleSpyType;
+    } = {
+        consoleSpy: undefined as unknown as ConsoleSpyType, // lazyinit
     };
+    const targetPath = 'src/tests/dist/[NewResource]';
+    prepareDefaultCliTest(context, targetPath);
+    prepareProjectEnvironment(targetPath);
 
-    callCliWithCustomArgsBeforeAll(
-        ['new-project', '--branch', 'develop'],
-        context,
-        false,
-        {
-            executable: '../../../dist/cli.js',
-            stdinContent: [
-                ...getStdinContentForNewProjectCommand('NewResource'),
-            ],
-            cwd: 'src/tests/dist',
-        },
-    );
-
-    callCliWithCustomArgsBeforeAll(['new-resource'], context, false, {
-        executable: '../../../../dist/cli.js',
-        stdinContent: [
-            'NewResource',
-            CLI_ENQUIRER_KEY.ENTER,
-            CLI_ENQUIRER_KEY.ENTER,
-            CLI_ENQUIRER_KEY.ENTER,
-        ],
-        cwd: targetPath,
+    beforeAll(() => {
+        fs.writeFileSync(
+            path.join(targetPath, 'mtasa-meta.yml'),
+            'info:\n    type: script',
+            'utf8',
+        );
     });
 
-    stdoutContainsMessages(context, ['Enter the resource name']);
+    beforeAll(async () => {
+        await newResource(targetPath, {
+            resourceName: 'NewResource',
+        });
+    }, CLI_EXECUTING_TIMEOUT);
 
     targetFileCheckTest(targetPath, true);
     targetFileCheckTest(
@@ -59,7 +46,6 @@ describe('New Resource CLI command', () => {
         path.join(targetPath, 'src/NewResource/utils.ts'),
         true,
     );
-    targetFileCheckTest(path.join(targetPath, 'mtasa-meta.yml'), true);
 
     test('The target file "mtasa-meta.yml" contains new resource data', () => {
         const content = fs.readFileSync(
