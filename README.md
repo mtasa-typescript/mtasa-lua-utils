@@ -1,63 +1,45 @@
 # MTASA Lua Utils for TypeScript compilation
 
-The repository provides the transformer and post-build, pre-build utilities.
+Provides utilities for project creating, resource creating,
 
-These utilities and transformers can be used with 
-[TypescriptToLua](https://github.com/TypeScriptToLua/TypeScriptToLua) package.
+![](.docs/help.gif)
 
-## Transformer
+# Available commands
 
-The transformer provides:
+## Help
 
-- TypeScript `import` removing: Result Lua file should not have any `requires` calls
-
-- TypeScript `export` (and inlined `export`) replace: All exported statements will be written to Lua's `_G`. 
-  [Example](docs/export.md)
-
-- File side checking: You cannot mix `import ... from '.../client'` 
-  and `import ... from '.../server'`
-
-### How to use
-
-Insert into `tsconfig.json`:
-
-```js
-{
-  "compilerOptions": {
-    // ...
-
-    "plugins": [
-      {
-        "transform": "mtasa-lua-utils/transformer",
-        "after": false,
-        "externalImports": true, //dont remove non mta imports (Default: false)
-        "globalExports": false //dont replace exports to global (Default: true)
-      }
-    ],
-    
-    // ...
-  }
-}
+```
+npx mtasa-lua-utils --help
 ```
 
-## PostBuild
+## New Project
 
-Checks compiled lua files correctness:
+Create new project
 
-- Are the files provided in `meta.xml`
-
-### How to use
-
-Insert into `package.json`:
-
-```js
-{
-  // ...
-
-  "scripts": {
-    "postbuild": "mtasa-utils-postbuild",
-  },   
-          
-  // ...
-}
 ```
+npx mtasa-lua-utils new-project
+```
+
+## New Resource
+
+Create new resource template
+
+```
+npx mtasa-lua-utils new-resource
+```
+
+**!** Run the command inside the project directory
+
+![](.docs/new_resource.gif)
+
+## Build
+
+Calls TypeScriptToLua functions for transpiling TypeScript resources
+
+```
+npx mtasa-lua-utils build
+```
+
+**!** Run the command inside the project directory
+
+![](.docs/build.gif)
