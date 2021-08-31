@@ -59,4 +59,22 @@ describe('New Resource CLI command', () => {
         expect(content).toContain('src: utils.ts');
         expect(content).toContain('srcDir: NewResource');
     });
+
+    test('The target file "src/NewResource/server.ts" contains new resource data', () => {
+        const content = fs.readFileSync(
+            path.join(targetPath, 'src/NewResource/server.ts'),
+            'utf8',
+        );
+        expect(content).toContain('@noSelfInFile');
+        expect(content).toContain('import { mtasa }');
+    });
+
+    test('The target file "src/NewResource/client.ts" contains new resource data', () => {
+        const content = fs.readFileSync(
+            path.join(targetPath, 'src/NewResource/client.ts'),
+            'utf8',
+        );
+        expect(content).toContain('@noSelfInFile');
+        expect(content).toContain('import { mtasa }');
+    });
 });
