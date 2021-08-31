@@ -95,12 +95,14 @@ function createNewResourceEnvironment(
     });
     fs.writeFileSync(
         path.join(resourceDirectory, 'server.ts'),
-        "import { mtasa } from 'mtasa-lua-types/types/mtasa/server'",
+        '/** @noSelfInFile */\n\n' +
+            "import { mtasa } from 'mtasa-lua-types/types/mtasa/server'",
         'utf8',
     );
     fs.writeFileSync(
         path.join(resourceDirectory, 'client.ts'),
-        "import { mtasa } from 'mtasa-lua-types/types/mtasa/client'",
+        '/** @noSelfInFile */\n\n' +
+            "import { mtasa } from 'mtasa-lua-types/types/mtasa/client'",
         'utf8',
     );
     fs.writeFileSync(path.join(resourceDirectory, 'utils.ts'), '', 'utf8');

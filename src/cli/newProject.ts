@@ -414,10 +414,10 @@ const showSuccessMessage: PostProcessFunction = function (directory, options) {
             directory +
             '\x1b[0m\n\n' +
             '\x1b[36m>\x1b[0m ' +
-            'Use \x1b[34mmtasa-lua-utils new-resource\x1b[0m inside ' +
+            'Use \x1b[34mnpm run new-resource\x1b[0m inside ' +
             'the project directory to create new resource\n' +
             '\x1b[36m>\x1b[0m ' +
-            'Use \x1b[34mmtasa-lua-utils build\x1b[0m inside ' +
+            'Use \x1b[34mnpm run build\x1b[0m inside ' +
             'the project directory to build code',
     );
 };
