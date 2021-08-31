@@ -46,8 +46,8 @@ describe('New Project CLI command', () => {
         'Features setup complete',
         'Node Modules prepared',
         'has been created',
-        'mtasa-lua-utils new-resource',
-        'mtasa-lua-utils build',
+        'npm run new-resource',
+        'npm run build',
     ]);
 
     targetFileCheckTest(targetPath, true);
