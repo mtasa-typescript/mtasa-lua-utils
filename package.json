@@ -1,6 +1,6 @@
 {
     "name": "mtasa-lua-utils",
-    "version": "0.2.4",
+    "version": "1.0.0-beta.6",
     "description": "Prepares Typescript files for Lua compilation for MTASA",
     "author": "Anatolii Titov <a@toliak.ru>",
     "keywords": [
@@ -20,27 +20,50 @@
     },
     "type": "commonjs",
     "scripts": {
+        "prebuild": "npm run convert-schema",
         "build": "tsc --build",
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "watch": "tsc --build --watch",
         "prettier": "prettier --check .",
-        "prettier-fix": "prettier --write ."
+        "prettier-fix": "prettier --write .",
+        "eslint": "eslint --max-warnings=0 .",
+        "test": "jest .",
+        "test-create": "node utils/create-test.js",
+        "convert-schema": "node utils/convert-schema.js && prettier --write src/compiler/meta/types.ts"
     },
     "bin": {
-        "mtasa-utils-postbuild": "./utils/postbuild.js"
+        "mtasa-lua-utils": "./dist/cli.js"
     },
     "files": [
-        "transformer/**/*",
-        "utils/**/*"
+        "dist/**/*",
+        "*.schema.json",
+        "src/compiler/empty.ts"
     ],
     "devDependencies": {
+        "@types/concat-stream": "^1.6.1",
+        "@types/jest": "^27.0.1",
+        "@types/js-yaml": "^4.0.2",
+        "@types/mv": "^2.1.2",
+        "@types/node": "^16.6.0",
+        "@types/unzipper": "^0.10.4",
+        "@typescript-eslint/eslint-plugin": "^4.29.1",
+        "@typescript-eslint/parser": "^4.29.1",
+        "concat-stream": "^2.0.0",
+        "eslint": "^7.32.0",
+        "jest": "^27.0.6",
+        "json-schema-to-typescript": "^10.1.4",
+        "mtasa-lua-types": "^0.6.3",
         "prettier": "^2.3.2",
+        "ts-jest": "^27.0.5",
         "ts-node": "^9.1.1",
-        "ttypescript": "^1.5.12",
-        "typescript": "^4.0.0"
+        "typescript": "~4.3.5"
     },
     "dependencies": {
-        "fast-glob": "^3.2.7",
-        "glob-escape": "^0.0.2",
-        "json5": "^2.2.0"
+        "enquirer": "^2.3.6",
+        "js-yaml": "^4.1.0",
+        "json5": "^2.2.0",
+        "jsonschema": "^1.4.0",
+        "typescript-to-lua": "^1.0.0",
+        "unzipper": "^0.10.11",
+        "xml-js": "^1.6.11"
     }
 }

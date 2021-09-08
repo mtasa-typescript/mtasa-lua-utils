@@ -1,19 +1,35 @@
 {
+    "$schema": "https://raw.githubusercontent.com/TypeScriptToLua/vscode-typescript-to-lua/master/tsconfig-schema.json",
     "compilerOptions": {
         "target": "ES6",
-        "module": "commonjs",
-        "moduleResolution": "node",
+        "lib": ["es6"],
+        "module": "CommonJS",
         "rootDir": "src",
-        "outDir": "transformer",
+        "outDir": "dist",
         "strict": true,
         "sourceMap": true,
         "declaration": true,
         "noImplicitAny": true,
         "noImplicitThis": true,
         "noImplicitReturns": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
         "esModuleInterop": true,
-        "lib": ["es2019"]
-    }
+        "resolveJsonModule": true,
+        "newLine": "LF",
+        "stripInternal": true,
+        "baseUrl": "."
+    },
+    "tstl": {
+        // MTASA Lua Language version is 5.1
+        "luaTarget": "5.1",
+        // No "self" in global functions
+        "noImplicitSelf": true,
+        // Provides debug.traceback function
+        "sourceMapTraceback": true,
+        // Lualib should be always included in the resource
+        "luaLibImport": "always",
+        // Verbose output
+        "tstlVerbose": true
+    },
+    "include": ["src/**/*"],
+    "exclude": ["src/tests/**/*"]
 }

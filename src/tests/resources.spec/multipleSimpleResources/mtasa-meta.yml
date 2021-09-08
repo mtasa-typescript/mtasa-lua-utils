@@ -1,0 +1,40 @@
+info:
+    name: Resource0
+    type: script
+
+minMtaVersion:
+    client: 1.5.8
+    server: 1.5.8
+
+compilerConfig:
+    srcDir: multipleSimpleResources/Resource0
+
+---
+info:
+    name: Resource1
+    type: script
+
+settings: &settings
+    - name: some-setting
+      value: '15'
+
+scripts:
+    - src: client.ts
+      type: client
+      cache: false
+
+compilerConfig:
+    srcDir: multipleSimpleResources/Resource1
+
+---
+info:
+    name: Resource2
+    type: script
+
+files:
+    - src: 'somewhere.png'
+      doCompileCheck: false
+      download: true
+
+compilerConfig:
+    srcDir: multipleSimpleResources/Resource2

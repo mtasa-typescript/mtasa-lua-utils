@@ -1,0 +1,14 @@
+info:
+    name: ExportAssignment
+    type: script
+
+compilerConfig:
+    srcDir: exportAssignment
+
+scripts:
+    - src: imported.ts
+      cache: false
+      type: client
+    - src: index.ts
+      cache: false
+      type: client

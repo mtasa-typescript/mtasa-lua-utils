@@ -1,0 +1,389 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "MTASA Meta",
+    "description": "MTASA Meta file. Extended for mtasa-lua-compiler",
+    "type": "object",
+    "properties": {
+        "info": {
+            "type": "object",
+            "description": "General resource information",
+            "properties": {
+                "author": {
+                    "type": "string",
+                    "description": "The author of this resource"
+                },
+                "version": {
+                    "type": "string",
+                    "description": "The version of this resource"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The name of this resource"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "A brief description of this resource"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The type of this resource",
+                    "enum": ["gamemode", "script", "map", "misc"]
+                },
+                "gamemodes": {
+                    "type": "array",
+                    "description": "The gamemodes to be compatible with the resource",
+                    "items": {
+                        "type": "string",
+                        "description": "Gamemode name"
+                    }
+                }
+            },
+            "additionalProperties": false,
+            "required": ["type"]
+        },
+        "compilerConfig": {
+            "type": "object",
+            "description": "Internal configuration for compiler",
+            "properties": {
+                "srcDir": {
+                    "type": "string",
+                    "description": "Directory with resource source files"
+                },
+                "outMetaComments": {
+                    "type": "boolean",
+                    "description": "Show comments in the meta.xml file"
+                },
+                "outMetaAdditionalProperties": {
+                    "type": "boolean",
+                    "description": "Show additional properties (not included in the default meta.xml) in the meta.xml file"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["srcDir"]
+        },
+        "scripts": {
+            "type": "array",
+            "description": "List of scripts",
+            "items": {
+                "$ref": "#/definitions/Script"
+            }
+        },
+        "maps": {
+            "type": "array",
+            "description": "Map definitions",
+            "items": {
+                "$ref": "#/definitions/Map"
+            }
+        },
+        "files": {
+            "type": "array",
+            "description": "File definitions",
+            "items": {
+                "$ref": "#/definitions/File"
+            }
+        },
+        "includes": {
+            "type": "array",
+            "description": "Include definitions",
+            "items": {
+                "$ref": "#/definitions/Include"
+            }
+        },
+        "configs": {
+            "type": "array",
+            "description": "Config definitions",
+            "items": {
+                "$ref": "#/definitions/Config"
+            }
+        },
+        "exports": {
+            "type": "array",
+            "description": "Export definitions",
+            "items": {
+                "$ref": "#/definitions/Export"
+            }
+        },
+        "htmls": {
+            "type": "array",
+            "description": "HTML definitions",
+            "items": {
+                "$ref": "#/definitions/Html"
+            }
+        },
+        "settings": {
+            "type": "array",
+            "description": "Most gamemodes use settings system to let server admins to configure it how they like. For instance you could set round time and then use get and set to get the value or change it, respectively.",
+            "items": {
+                "$ref": "#/definitions/Setting"
+            }
+        },
+        "minMtaVersion": {
+            "$ref": "#/definitions/MinMtaVersion"
+        },
+        "aclRequests": {
+            "type": "array",
+            "description": "A list of ACL rights this resource will need. Any user with admin permission can accept or reject a resource ACL request by using the command: /aclrequest [list/allow/deny] <resourceName>",
+            "items": {
+                "$ref": "#/definitions/AclRequest"
+            }
+        },
+        "syncMapElementData": {
+            "type": "boolean",
+            "description": "Controls whether map element data such as \"PosX\" and \"DoubleSided\" are transferred to the client. This data is usually not required by most gamemodes or resources. (Map Editor and Interiors require this to be not set to false to work). When set in a gamemode meta.xml, the setting will apply to all maps loaded by that resource."
+        },
+        "downloadPriorityGroup": {
+            "type": "number",
+            "description": "If not set, the download priority group for a resource defaults to 0. If this is set higher than 0, then the resource will be downloaded and started on the client earlier than other resources. This option is useful for resources with critical client functionality that other things in your gamemode (or fair play) rely on. If set to less than 0 (a negative number, like -1), the resource will be downloaded and started on the client later than other resources."
+        },
+        "additionalTags": {
+            "type": "array",
+            "description": "Put additional XML tags in this list",
+            "items": {
+                "$ref": "#/definitions/XMLTagData"
+            }
+        }
+    },
+    "required": ["info", "compilerConfig"],
+    "additionalProperties": false,
+    "definitions": {
+        "XMLTagData": {
+            "type": "object",
+            "description": "XML Tag",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Tag name"
+                },
+                "value": {
+                    "description": "XML Tag value",
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "array",
+                            "description": "Inner XML Tags",
+                            "items": {
+                                "$ref": "#/definitions/XMLTagData"
+                            }
+                        }
+                    ]
+                },
+                "properties": {
+                    "type": "object",
+                    "description": "XML Tag properties",
+                    "additionalProperties": { "type": "string" }
+                }
+            },
+            "additionalProperties": false,
+            "required": ["name"]
+        },
+        "Script": {
+            "type": "object",
+            "description": "Source code for this resource",
+            "properties": {
+                "src": {
+                    "type": "string",
+                    "description": "TypeScript script file"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The type of source code",
+                    "enum": ["server", "client", "shared"]
+                },
+                "cache": {
+                    "type": "boolean",
+                    "description": "When the script file type is \"client\", this setting controls whether the file is saved on the clients' hard drive"
+                },
+                "validate": {
+                    "type": "boolean",
+                    "description": "If set to \"false\", compatibility checks are skipped"
+                },
+                "bundled": {
+                    "type": "boolean",
+                    "description": "Set to true, if you would like to bundle dependent TS files into a single one"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["src", "type"]
+        },
+        "Map": {
+            "type": "object",
+            "description": "The map for a gamemode",
+            "properties": {
+                "src": {
+                    "type": "string",
+                    "description": "Must be in the resource source directory"
+                },
+                "dimension": {
+                    "type": "number",
+                    "description": "Dimension in which the map will be loaded"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["src"]
+        },
+        "File": {
+            "type": "object",
+            "description": "A client-side file. Generally these are images, .txd, .col, .dff or .xml files. They'll be downloaded by clients when the resources is started (or on join",
+            "properties": {
+                "src": {
+                    "type": "string",
+                    "description": "Client-side file name (can be path too eg. \"images/image.png\")\n"
+                },
+                "download": {
+                    "type": "boolean",
+                    "description": "Whether or not to be sent to the client automatically"
+                },
+                "doCompileCheck": {
+                    "type": "boolean",
+                    "description": "Perform file-existence check on compile"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["src"]
+        },
+        "Include": {
+            "type": "object",
+            "description": "Include resources that this resource will use",
+            "properties": {
+                "resource": {
+                    "type": "string",
+                    "description": "Resource name that you want to start with this resource"
+                },
+                "minVersion": {
+                    "type": "string",
+                    "description": "Minimum version that resource needs to be"
+                },
+                "maxVersion": {
+                    "type": "string",
+                    "description": "Maximum version that resource needs to be"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["resource"]
+        },
+        "Config": {
+            "type": "object",
+            "description": "Config file (.xml) can be accessed by resource",
+            "properties": {
+                "src": {
+                    "type": "string",
+                    "description": "The file name of the config file"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "The type of the config file",
+                    "enum": ["client", "server"]
+                }
+            },
+            "additionalProperties": false,
+            "required": ["src", "type"]
+        },
+        "Export": {
+            "type": "object",
+            "description": "This exports functions from this resource, so other resources can use them with call",
+            "properties": {
+                "function": {
+                    "type": "string",
+                    "description": "The function name"
+                },
+                "type": {
+                    "type": "string",
+                    "description": "Whether function is exported server-side or client-side",
+                    "enum": ["client", "server", "shared"]
+                },
+                "http": {
+                    "type": "boolean",
+                    "description": "Can the function be called via HTTP"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["function", "type"]
+        },
+        "Html": {
+            "type": "object",
+            "description": "HTML file",
+            "properties": {
+                "src": {
+                    "type": "string",
+                    "description": "The filename for the HTTP file"
+                },
+                "default": {
+                    "type": "boolean",
+                    "description": "The html file is one that is shown by default when visiting /resourceName/ on the server. Only one html can be default, the rest are ignored"
+                },
+                "raw": {
+                    "type": "boolean",
+                    "description": "The html file is not parsed by the Lua interpreter and is treated as binary data. Must be used for binary files"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["src", "default", "raw"]
+        },
+        "Setting": {
+            "type": "object",
+            "description": "Resource settings can be accessed by resource and Admin panel",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The setting name used by the scripts to get or set the setting value"
+                },
+                "value": {
+                    "type": "string",
+                    "description": "The setting default value used by the scripts"
+                },
+                "friendlyName": {
+                    "type": "string",
+                    "description": "A friendly name to the setting"
+                },
+                "accept": {
+                    "type": "string",
+                    "description": "The values the setting could accept"
+                },
+                "examples": {
+                    "type": "string",
+                    "description": "An Example of a value"
+                },
+                "desc": {
+                    "type": "string",
+                    "description": "A description of the setting"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["name", "value"]
+        },
+        "MinMtaVersion": {
+            "type": "object",
+            "description": "Minimum version requirements for this resource to run correctly. When authoring resources, the minimum version should usually be set to the current released version of MTA:SA",
+            "properties": {
+                "client": {
+                    "type": "string",
+                    "description": "The minimum client version"
+                },
+                "server": {
+                    "type": "string",
+                    "description": "The minimum server version"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["client", "server"]
+        },
+        "AclRequest": {
+            "type": "object",
+            "description": "An individual right",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The right name"
+                },
+                "access": {
+                    "type": "boolean",
+                    "description": "Set to true to allow the resource to access this right. Set to false to deny the access to this right"
+                }
+            },
+            "additionalProperties": false,
+            "required": ["name", "access"]
+        }
+    }
+}

@@ -1,0 +1,9 @@
+info:
+    type: script
+
+scripts:
+    - src: not-existing.ts
+      type: server
+
+compilerConfig:
+    srcDir: notExistingScriptInMeta

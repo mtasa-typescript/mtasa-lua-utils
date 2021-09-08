@@ -1,0 +1,28 @@
+info:
+    name: Resource0
+    type: script
+
+compilerConfig:
+    srcDir: importFunctionFromAnotherResource/Resource0
+
+scripts:
+    - src: indexWithExports.ts
+      type: server
+
+exports:
+    - function: anotherResourceFunction
+      type: server
+
+---
+info:
+    name: Resource1
+    type: script
+
+compilerConfig:
+    srcDir: importFunctionFromAnotherResource/Resource1
+
+scripts:
+    - src: imported.ts
+      type: server
+    - src: index.ts
+      type: server

@@ -1,0 +1,10 @@
+info:
+    type: script
+
+compilerConfig:
+    srcDir: withFile
+
+files:
+    - src: files/image.png
+    - src: files/not-tracked.png
+      doCompileCheck: false

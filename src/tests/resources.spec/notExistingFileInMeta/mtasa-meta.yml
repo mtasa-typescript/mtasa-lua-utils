@@ -1,0 +1,8 @@
+info:
+    type: script
+
+files:
+    - src: file/not-existing.png
+
+compilerConfig:
+    srcDir: notExistingFileInMeta

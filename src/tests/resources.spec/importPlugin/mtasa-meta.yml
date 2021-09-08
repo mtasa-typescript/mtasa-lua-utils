@@ -1,0 +1,46 @@
+info:
+    name: Resource0
+    type: script
+
+compilerConfig:
+    srcDir: importPlugin/Resource0
+
+scripts:
+    - src: imported.ts
+      cache: false
+      type: client
+    - src: index.ts
+      cache: false
+      type: client
+
+---
+info:
+    name: Resource1
+    type: script
+
+compilerConfig:
+    srcDir: importPlugin/Resource1
+
+scripts:
+    - src: imported.ts
+      cache: false
+      type: client
+    - src: index.ts
+      cache: false
+      type: client
+
+---
+info:
+    name: Resource2
+    type: script
+
+compilerConfig:
+    srcDir: importPlugin/Resource2
+
+scripts:
+    - src: imported.ts
+      cache: false
+      type: client
+    - src: index.ts
+      cache: false
+      type: client
