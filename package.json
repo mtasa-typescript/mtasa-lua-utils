@@ -51,7 +51,7 @@
         "eslint": "^7.32.0",
         "jest": "^27.0.6",
         "json-schema-to-typescript": "^10.1.4",
-        "mtasa-lua-types": "^0.6.3",
+        "mtasa-lua-types": "^1.0.0",
         "prettier": "^2.3.2",
         "ts-jest": "^27.0.5",
         "ts-node": "^10.2.1",
