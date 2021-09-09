@@ -1,5 +1,5 @@
 import { Names, SomeInterface } from '../Resource0/indexWithTypes';
-import { mtasa } from 'mtasa-lua-types/types/mtasa/client';
+import { mtasa } from 'mtasa-lua-types/client';
 
 const object: SomeInterface = {
     password: '123456',

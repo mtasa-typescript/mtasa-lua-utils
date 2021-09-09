@@ -28,7 +28,7 @@ interface ImportSpecifierToGlobalTable {
 const importSpecifiersMapToGlobalTable: ImportSpecifierToGlobalTable[] = [
     {
         namePattern: /^mtasa$/,
-        modulePattern: /^mtasa-lua-types\/types\/mtasa\/(client|server)$/,
+        modulePattern: /^mtasa-lua-types\/(client|server)$/,
     },
 ];
 
