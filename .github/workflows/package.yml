@@ -63,6 +63,8 @@ jobs:
               run: npm install -g npm
             - name: Install dependencies
               run: npm ci
+            - name: Build project
+              run: npm run build
             - name: Run test
               run: npm run test
     publish:
@@ -96,7 +98,7 @@ jobs:
               run: npm install -g npm
             - name: Install dependencies
               run: npm ci
-            - name: Run build
+            - name: Build project
               run: npm run build
             - name: Run publish
               run: npm run publish
