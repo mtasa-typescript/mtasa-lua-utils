@@ -31,8 +31,12 @@ jobs:
                       ${{ runner.os }}-build-${{ env.cache-name }}-
                       ${{ runner.os }}-build-
                       ${{ runner.os }}-
-            - run: npm install
-            - run: npm run prettier
+            - name: Update NPM
+              run: npm install -g npm
+            - name: Install dependencies
+              run: npm ci
+            - name: Run prettier
+              run: npm run prettier
     test:
         runs-on: ubuntu-latest
         steps:
@@ -55,9 +59,14 @@ jobs:
                       ${{ runner.os }}-build-${{ env.cache-name }}-
                       ${{ runner.os }}-build-
                       ${{ runner.os }}-
-            - run: npm install
-            - run: npm run build
-            - run: npm run test
+            - name: Update NPM
+              run: npm install -g npm
+            - name: Install dependencies
+              run: npm ci
+            - name: Build project
+              run: npm run build
+            - name: Run test
+              run: npm run test
     publish:
         runs-on: ubuntu-latest
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
@@ -85,8 +94,13 @@ jobs:
                       ${{ runner.os }}-build-${{ env.cache-name }}-
                       ${{ runner.os }}-build-
                       ${{ runner.os }}-
-            - run: npm install
-            - run: npm run build
-            - run: npm publish
+            - name: Update NPM
+              run: npm install -g npm
+            - name: Install dependencies
+              run: npm ci
+            - name: Build project
+              run: npm run build
+            - name: Run publish
+              run: npm run publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
