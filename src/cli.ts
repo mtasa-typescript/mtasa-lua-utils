@@ -24,7 +24,7 @@ const HELP_MESSAGE =
     '\x1b[35mmtasa-lua-utils \x1b[1mbuild \x1b[34m--help\x1b[0m';
 
 const ERROR_MESSAGE =
-    'Unexpected argument. Use command below to get information:\n' +
+    '\x1b[31mUnexpected argument.\x1b[0m Use command below to get information:\n' +
     '\x1b[34mmtasa-lua-utils --help\x1b[0m';
 
 function parseAndExecuteArguments(): void {
