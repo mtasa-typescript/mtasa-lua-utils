@@ -45,7 +45,7 @@
         "@types/mv": "^2.1.2",
         "@types/node": "^16.6.0",
         "@types/unzipper": "^0.10.4",
-        "@typescript-eslint/eslint-plugin": "^4.29.1",
+        "@typescript-eslint/eslint-plugin": "^5.0.0",
         "@typescript-eslint/parser": "^4.29.1",
         "concat-stream": "^2.0.0",
         "eslint": "^8.0.0",
