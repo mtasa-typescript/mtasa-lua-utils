@@ -23,7 +23,7 @@ describe('New Project CLI command (no example resource)', () => {
             path.basename(targetPath),
             targetPath,
             {
-                branch: 'develop',
+                branch: 'master',
                 help: false,
             },
             {
