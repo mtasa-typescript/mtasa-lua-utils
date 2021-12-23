@@ -1,6 +1,6 @@
 {
     "name": "mtasa-lua-utils",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Prepares Typescript files for Lua compilation for MTASA",
     "author": "Anatolii Titov <a@toliak.ru>",
     "keywords": [
@@ -40,29 +40,29 @@
     ],
     "devDependencies": {
         "@types/concat-stream": "^1.6.1",
-        "@types/jest": "^27.0.1",
-        "@types/js-yaml": "^4.0.2",
+        "@types/jest": "^27.0.3",
+        "@types/js-yaml": "^4.0.5",
         "@types/mv": "^2.1.2",
-        "@types/node": "^16.6.0",
+        "@types/node": "^16.11.17",
         "@types/unzipper": "^0.10.4",
-        "@typescript-eslint/eslint-plugin": "^5.0.0",
-        "@typescript-eslint/parser": "^5.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.8.0",
+        "@typescript-eslint/parser": "^5.8.0",
         "concat-stream": "^2.0.0",
-        "eslint": "^8.0.0",
-        "jest": "^27.0.6",
-        "json-schema-to-typescript": "^10.1.4",
-        "mtasa-lua-types": "^1.0.0",
-        "prettier": "^2.3.2",
-        "ts-jest": "^27.0.5",
-        "ts-node": "^10.2.1",
-        "typescript": "~4.3.5"
+        "eslint": "^8.5.0",
+        "jest": "^27.4.5",
+        "json-schema-to-typescript": "^10.1.5",
+        "mtasa-lua-types": "^1.1.0",
+        "prettier": "^2.5.1",
+        "ts-jest": "^27.1.2",
+        "ts-node": "^10.4.0",
+        "typescript": "~4.5.2"
     },
     "dependencies": {
         "enquirer": "^2.3.6",
         "js-yaml": "^4.1.0",
         "json5": "^2.2.0",
         "jsonschema": "^1.4.0",
-        "typescript-to-lua": "^1.0.0",
+        "typescript-to-lua": "^1.0.1",
         "unzipper": "^0.10.11",
         "xml-js": "^1.6.11"
     }
