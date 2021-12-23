@@ -100,7 +100,8 @@ jobs:
               run: npm ci
             - name: Build project
               run: npm run build
-            - name: Run publish
-              run: npm run publish
+            - run: |
+                  export TAG="latest"
+                  npm publish --tag "$TAG"
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
