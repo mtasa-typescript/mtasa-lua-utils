@@ -8,6 +8,8 @@ compilerConfig:
 scripts:
     - src: indexWithExports.ts
       type: server
+    - src: misc.ts
+      type: server
 
 exports:
     - function: anotherResourceFunction

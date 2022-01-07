@@ -31,7 +31,7 @@ describe('Case "importFunctionFromAnotherResource", Resource0', () => {
     targetFileCheckTest(path.join(targetPath, 'indexWithExports.lua'), true);
     targetFileCheckTest(path.join(targetPath, 'meta.xml'), true);
 
-    targetDirectoryFilesLengthTest(targetPath, 5);
+    targetDirectoryFilesLengthTest(targetPath, 8);
 
     test('The target file "meta.xml" contains expected tags', () => {
         const content = fs.readFileSync(

@@ -74,8 +74,21 @@ function resolveImportsFromAnotherModules(
     if (isSameResource) {
         return [];
     }
-    const typeChecker = context.program.getTypeChecker();
 
+    // Issue #155
+    // TODO: issue #156
+    const originResourceDir = path.join(
+        options.originalRootDir ?? '',
+        options.resourceSpecific?.compilerConfig.srcDir ?? '',
+    );
+    const filePath = path.resolve(context.sourceFile.fileName);
+
+    if (!filePath.startsWith(originResourceDir)) {
+        return [];
+        // Ok that's another resource. Do not try to compile it.
+    }
+
+    const typeChecker = context.program.getTypeChecker();
     if (node.importClause?.namedBindings === undefined) {
         return context.superTransformStatements(node);
     }
