@@ -39,7 +39,7 @@
         "src/compiler/empty.ts"
     ],
     "devDependencies": {
-        "@types/concat-stream": "^1.6.1",
+        "@types/concat-stream": "^2.0.0",
         "@types/jest": "^27.0.3",
         "@types/js-yaml": "^4.0.5",
         "@types/mv": "^2.1.2",
