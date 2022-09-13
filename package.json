@@ -43,7 +43,7 @@
         "@types/jest": "^27.0.3",
         "@types/js-yaml": "^4.0.5",
         "@types/mv": "^2.1.2",
-        "@types/node": "^17.0.8",
+        "@types/node": "^18.7.17",
         "@types/unzipper": "^0.10.4",
         "@typescript-eslint/eslint-plugin": "^5.8.0",
         "@typescript-eslint/parser": "^5.8.0",
