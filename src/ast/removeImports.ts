@@ -27,7 +27,11 @@ const removeImportDeclarations: FunctionVisitor<ts.ImportDeclaration> =
                 createIdentifier(
                     name,
                     namespaceImport.name,
-                    getIdentifierSymbolId(context, namespaceImport.name, undefined),
+                    getIdentifierSymbolId(
+                        context,
+                        namespaceImport.name,
+                        undefined,
+                    ),
                 ),
                 createIdentifier(getGlobalsTableName()),
                 node,

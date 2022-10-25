@@ -29,10 +29,6 @@
         // Verbose output
         "tstlVerbose": true
     },
-    "include": [
-        "src/**/*"
-    ],
-    "exclude": [
-        "src/tests/**/*"
-    ]
+    "include": ["src/**/*"],
+    "exclude": ["src/tests/**/*"]
 }

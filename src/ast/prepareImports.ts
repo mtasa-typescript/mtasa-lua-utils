@@ -151,7 +151,11 @@ function resolveImportsFromAnotherModules(
                         createIdentifier(
                             declarationName.text,
                             declarationName,
-                            getIdentifierSymbolId(context, declarationName, undefined),
+                            getIdentifierSymbolId(
+                                context,
+                                declarationName,
+                                undefined,
+                            ),
                         ),
                         createIdentifier(
                             `function(...) return exports["${resourceName}"]:${declarationName.text}(...) end`,
@@ -214,7 +218,11 @@ const prepareGlobalImports: FunctionVisitor<ts.ImportDeclaration> = function (
                         createIdentifier(
                             value.name.text,
                             value.name,
-                            getIdentifierSymbolId(context, value.name, undefined),
+                            getIdentifierSymbolId(
+                                context,
+                                value.name,
+                                undefined,
+                            ),
                         ),
                         createIdentifier(value.propertyName?.text ?? 'nil'),
                         value,
