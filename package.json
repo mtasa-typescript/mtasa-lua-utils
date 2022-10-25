@@ -47,6 +47,7 @@
         "@types/unzipper": "^0.10.4",
         "@typescript-eslint/eslint-plugin": "^5.8.0",
         "@typescript-eslint/parser": "^5.8.0",
+        "@typescript-to-lua/language-extensions": "^1.0.0",
         "concat-stream": "^2.0.0",
         "eslint": "^8.5.0",
         "jest": "^27.4.5",
@@ -55,14 +56,14 @@
         "prettier": "^2.5.1",
         "ts-jest": "^27.1.2",
         "ts-node": "^10.4.0",
-        "typescript": "~4.5.2"
+        "typescript": "^4.5.2"
     },
     "dependencies": {
         "enquirer": "^2.3.6",
         "js-yaml": "^4.1.0",
         "json5": "^2.2.0",
         "jsonschema": "^1.4.0",
-        "typescript-to-lua": "^1.0.1",
+        "typescript-to-lua": "^1.10.1",
         "unzipper": "^0.10.11",
         "xml-js": "^1.6.11"
     }
