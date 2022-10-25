@@ -29,7 +29,7 @@ const removeExportDeclaration: FunctionVisitor<ts.ExportDeclaration> =
             }
 
             const expression = assignment.left[0] as TableIndexExpression;
-            if (expression.table.kind !== 28) {
+            if (expression.table.kind !== SyntaxKind.Identifier) {
                 continue;
             }
 

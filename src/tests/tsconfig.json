@@ -17,7 +17,7 @@
         "stripInternal": true,
         "baseUrl": ".",
         "types": [
-            "typescript-to-lua/language-extensions",
+            "@typescript-to-lua/language-extensions",
             "@types/jest",
             "@types/node"
         ]
@@ -30,7 +30,7 @@
         // Provides debug.traceback function
         "sourceMapTraceback": true,
         // Lualib should be always included in the resource
-        "luaLibImport": "always"
+        "luaLibImport": "require"
     },
     "include": ["src/**/*"],
     "exclude": ["src/tests/**/*"]

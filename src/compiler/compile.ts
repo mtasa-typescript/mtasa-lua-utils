@@ -159,7 +159,7 @@ export function compileLuaLib(
         ...extendOptions(options, meta, data),
         rootDir: path.dirname(getEmptyTsFilePath()),
         outDir: data.outDir,
-        luaLibImport: LuaLibImportKind.Always,
+        luaLibImport: LuaLibImportKind.Require,
     };
 
     if (options.tstlVerbose) {

@@ -25,11 +25,14 @@
         "noImplicitSelf": true,
         // Provides debug.traceback function
         "sourceMapTraceback": true,
-        // Lualib should be always included in the resource
-        "luaLibImport": "always",
+        "luaLibImport": "require",
         // Verbose output
         "tstlVerbose": true
     },
-    "include": ["src/**/*"],
-    "exclude": ["src/tests/**/*"]
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "src/tests/**/*"
+    ]
 }

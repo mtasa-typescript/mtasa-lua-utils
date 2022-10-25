@@ -21,13 +21,13 @@ const validateLuaTarget: ValidatorFunction = function (options) {
 };
 
 const validateLuaLibImport: ValidatorFunction = function (options) {
-    if (options.luaLibImport === 'always') {
+    if (options.luaLibImport === 'require') {
         return [];
     }
 
     return [
         simpleTsDiagnostic(
-            'Expected luaLibImport property value: "always". ' +
+            'Expected luaLibImport property value: "require". ' +
                 'Check the tsconfig.json\n' +
                 'https://github.com/mtasa-typescript/mtasa-lua-utils/blob/master/tsconfig.json',
             DiagnosticCategory.Warning,
