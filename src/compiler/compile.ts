@@ -182,6 +182,12 @@ export function compileLuaLib(
                 return;
             }
 
+            const returnRegexp = /return\s({\n(?:\s+?__TS__\w+(?:\s=|,)){2}[\W\w]+})/ig;
+            const returnValue = dataWrite.match(returnRegexp)?.[0];
+            const returnScript = 'for key, value in pairs(MTA_EXPORTS) do\n\t_G[key] = value\nend';
+            if(!returnValue) throw new Error('cannot replace exports')
+            dataWrite = dataWrite.replace(returnRegexp, `local MTA_EXPORTS = $1\n\n${returnScript}`)
+
             return writeData(
                 fileName,
                 dataWrite,
